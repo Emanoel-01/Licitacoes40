@@ -41,7 +41,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
-import { createPageUrl } from "@/pages/utils";
+import { createPageUrl } from "./utils";
 
 export default function Empresas() {
   const [showForm, setShowForm] = useState(false);
