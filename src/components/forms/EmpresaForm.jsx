@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Upload, Building2, Save, X } from "lucide-react";
+import { Upload, Building2, Save, X, FileText, Trash2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 export default function EmpresaForm({ empresa, onSave, onCancel }) {
@@ -21,8 +21,8 @@ export default function EmpresaForm({ empresa, onSave, onCancel }) {
     cpf_responsavel: "",
     status: "ativo",
     logo_url: "",
-    contrato_social_url: "",
-    documentos_socios_url: "",
+    contrato_social_urls: [],
+    documentos_socios_urls: [],
     observacoes: ""
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -59,13 +59,18 @@ export default function EmpresaForm({ empresa, onSave, onCancel }) {
   };
 
   const handleContratoUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
     
     setUploadingContrato(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      handleChange("contrato_social_url", file_url);
+      const uploadedUrls = [];
+      for (const file of files) {
+        const { file_url } = await base44.integrations.Core.UploadFile({ file });
+        uploadedUrls.push(file_url);
+      }
+      const currentUrls = formData.contrato_social_urls || [];
+      handleChange("contrato_social_urls", [...currentUrls, ...uploadedUrls]);
     } catch (error) {
       console.error("Erro no upload:", error);
     }
@@ -73,17 +78,34 @@ export default function EmpresaForm({ empresa, onSave, onCancel }) {
   };
 
   const handleSociosUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
     
     setUploadingSocios(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      handleChange("documentos_socios_url", file_url);
+      const uploadedUrls = [];
+      for (const file of files) {
+        const { file_url } = await base44.integrations.Core.UploadFile({ file });
+        uploadedUrls.push(file_url);
+      }
+      const currentUrls = formData.documentos_socios_urls || [];
+      handleChange("documentos_socios_urls", [...currentUrls, ...uploadedUrls]);
     } catch (error) {
       console.error("Erro no upload:", error);
     }
     setUploadingSocios(false);
+  };
+
+  const removeContratoFile = (index) => {
+    const newUrls = [...(formData.contrato_social_urls || [])];
+    newUrls.splice(index, 1);
+    handleChange("contrato_social_urls", newUrls);
+  };
+
+  const removeSociosFile = (index) => {
+    const newUrls = [...(formData.documentos_socios_urls || [])];
+    newUrls.splice(index, 1);
+    handleChange("documentos_socios_urls", newUrls);
   };
 
   const handleSubmit = async (e) => {
@@ -259,51 +281,69 @@ export default function EmpresaForm({ empresa, onSave, onCancel }) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="contrato_social">Contrato Social (PDF)</Label>
-            <div className="flex gap-2">
-              <Input
-                type="file"
-                accept=".pdf"
-                onChange={handleContratoUpload}
-                disabled={uploadingContrato}
-                className="flex-1"
-              />
-              {formData.contrato_social_url && (
-                <a
-                  href={formData.contrato_social_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-1 px-3 py-2 text-sm text-blue-600 hover:underline border border-slate-200 rounded-lg"
-                >
-                  Ver PDF
-                </a>
-              )}
-            </div>
-            {uploadingContrato && <p className="text-sm text-slate-500">Enviando arquivo...</p>}
+            <Label htmlFor="contrato_social">Contrato Social (múltiplos PDFs)</Label>
+            <Input
+              type="file"
+              accept=".pdf"
+              multiple
+              onChange={handleContratoUpload}
+              disabled={uploadingContrato}
+            />
+            {uploadingContrato && <p className="text-sm text-slate-500">Enviando arquivos...</p>}
+            {formData.contrato_social_urls && formData.contrato_social_urls.length > 0 && (
+              <div className="space-y-2 mt-2">
+                {formData.contrato_social_urls.map((url, index) => (
+                  <div key={index} className="flex items-center gap-2 p-2 border border-slate-200 rounded-lg">
+                    <FileText className="w-4 h-4 text-slate-500" />
+                    <a href={url} target="_blank" rel="noreferrer" className="flex-1 text-sm text-blue-600 hover:underline truncate">
+                      Contrato {index + 1}
+                    </a>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeContratoFile(index)}
+                      className="h-6 w-6"
+                    >
+                      <Trash2 className="w-3 h-3 text-red-500" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="documentos_socios">Documentos dos Sócios (PDF/ZIP)</Label>
-            <div className="flex gap-2">
-              <Input
-                type="file"
-                accept=".pdf,.zip"
-                onChange={handleSociosUpload}
-                disabled={uploadingSocios}
-                className="flex-1"
-              />
-              {formData.documentos_socios_url && (
-                <a
-                  href={formData.documentos_socios_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-1 px-3 py-2 text-sm text-blue-600 hover:underline border border-slate-200 rounded-lg"
-                >
-                  Ver Arquivo
-                </a>
-              )}
-            </div>
-            {uploadingSocios && <p className="text-sm text-slate-500">Enviando arquivo...</p>}
+            <Label htmlFor="documentos_socios">Documentos dos Sócios (múltiplos PDFs/ZIPs)</Label>
+            <Input
+              type="file"
+              accept=".pdf,.zip"
+              multiple
+              onChange={handleSociosUpload}
+              disabled={uploadingSocios}
+            />
+            {uploadingSocios && <p className="text-sm text-slate-500">Enviando arquivos...</p>}
+            {formData.documentos_socios_urls && formData.documentos_socios_urls.length > 0 && (
+              <div className="space-y-2 mt-2">
+                {formData.documentos_socios_urls.map((url, index) => (
+                  <div key={index} className="flex items-center gap-2 p-2 border border-slate-200 rounded-lg">
+                    <FileText className="w-4 h-4 text-slate-500" />
+                    <a href={url} target="_blank" rel="noreferrer" className="flex-1 text-sm text-blue-600 hover:underline truncate">
+                      Documento {index + 1}
+                    </a>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeSociosFile(index)}
+                      className="h-6 w-6"
+                    >
+                      <Trash2 className="w-3 h-3 text-red-500" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">

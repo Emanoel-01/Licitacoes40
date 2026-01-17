@@ -38,7 +38,7 @@ export default function AcervoTecnico() {
     profissional_id: "",
     titulo: "",
     descricao: "",
-    arquivo_cat_url: "",
+    arquivo_cat_urls: [],
     tipo_documento: "CAT",
     data_execucao: "",
     valor_obra: "",
@@ -64,7 +64,7 @@ export default function AcervoTecnico() {
         profissional_id: "",
         titulo: "",
         descricao: "",
-        arquivo_cat_url: "",
+        arquivo_cat_urls: [],
         tipo_documento: "CAT",
         data_execucao: "",
         valor_obra: "",
@@ -82,18 +82,33 @@ export default function AcervoTecnico() {
   });
 
   const handleFileUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
 
     setUploading(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      setFormData(prev => ({ ...prev, arquivo_cat_url: file_url }));
+      const uploadedUrls = [];
+      for (const file of files) {
+        const { file_url } = await base44.integrations.Core.UploadFile({ file });
+        uploadedUrls.push(file_url);
+      }
+      setFormData(prev => ({ 
+        ...prev, 
+        arquivo_cat_urls: [...(prev.arquivo_cat_urls || []), ...uploadedUrls] 
+      }));
     } catch (error) {
-      alert("Erro ao fazer upload do arquivo");
+      alert("Erro ao fazer upload dos arquivos");
     } finally {
       setUploading(false);
     }
+  };
+
+  const removeFile = (index) => {
+    setFormData(prev => {
+      const newUrls = [...(prev.arquivo_cat_urls || [])];
+      newUrls.splice(index, 1);
+      return { ...prev, arquivo_cat_urls: newUrls };
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -242,17 +257,22 @@ export default function AcervoTecnico() {
                     <p className="text-sm text-slate-500 line-clamp-2">{acervo.descricao}</p>
                   )}
 
-                  {acervo.arquivo_cat_url && (
-                    <a
-                      href={acervo.arquivo_cat_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 hover:underline"
-                    >
-                      <FileText className="w-4 h-4" />
-                      Ver Documento
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
+                  {acervo.arquivo_cat_urls && acervo.arquivo_cat_urls.length > 0 && (
+                    <div className="space-y-1">
+                      {acervo.arquivo_cat_urls.map((url, idx) => (
+                        <a
+                          key={idx}
+                          href={url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 hover:underline"
+                        >
+                          <FileText className="w-4 h-4" />
+                          Documento {idx + 1}
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      ))}
+                    </div>
                   )}
                 </CardContent>
               </Card>
@@ -357,28 +377,36 @@ export default function AcervoTecnico() {
               </div>
 
               <div className="space-y-2">
-                <Label>Arquivo PDF do Documento</Label>
-                <div className="flex gap-2">
-                  <Input
-                    type="file"
-                    accept=".pdf"
-                    onChange={handleFileUpload}
-                    disabled={uploading}
-                    className="flex-1"
-                  />
-                  {formData.arquivo_cat_url && (
-                    <a
-                      href={formData.arquivo_cat_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-center gap-1 text-sm text-blue-600 hover:underline"
-                    >
-                      <FileText className="w-4 h-4" />
-                      Ver
-                    </a>
-                  )}
-                </div>
-                {uploading && <p className="text-sm text-slate-500">Enviando arquivo...</p>}
+                <Label>Arquivos PDF do Documento (múltiplos)</Label>
+                <Input
+                  type="file"
+                  accept=".pdf"
+                  multiple
+                  onChange={handleFileUpload}
+                  disabled={uploading}
+                />
+                {uploading && <p className="text-sm text-slate-500">Enviando arquivos...</p>}
+                {formData.arquivo_cat_urls && formData.arquivo_cat_urls.length > 0 && (
+                  <div className="space-y-2 mt-2">
+                    {formData.arquivo_cat_urls.map((url, index) => (
+                      <div key={index} className="flex items-center gap-2 p-2 border border-slate-200 rounded-lg">
+                        <FileText className="w-4 h-4 text-slate-500" />
+                        <a href={url} target="_blank" rel="noreferrer" className="flex-1 text-sm text-blue-600 hover:underline truncate">
+                          Documento {index + 1}
+                        </a>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeFile(index)}
+                          className="h-6 w-6"
+                        >
+                          <Trash2 className="w-3 h-3 text-red-500" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className="flex gap-3 pt-4">
