@@ -4,12 +4,12 @@ import Dashboard from './pages/Dashboard';
 import Empresas from './pages/Empresas';
 import Filtros from './pages/Filtros';
 import FontesConsultas from './pages/FontesConsultas';
+import Home from './pages/Home';
 import LandingPage from './pages/LandingPage';
 import OportunidadeDetalhe from './pages/OportunidadeDetalhe';
 import Oportunidades from './pages/Oportunidades';
-import Profissionais from './pages/Profissionais';
-import Home from './pages/Home';
 import Perfil from './pages/Perfil';
+import Profissionais from './pages/Profissionais';
 import __Layout from './Layout.jsx';
 
 
@@ -20,12 +20,12 @@ export const PAGES = {
     "Empresas": Empresas,
     "Filtros": Filtros,
     "FontesConsultas": FontesConsultas,
+    "Home": Home,
     "LandingPage": LandingPage,
     "OportunidadeDetalhe": OportunidadeDetalhe,
     "Oportunidades": Oportunidades,
-    "Profissionais": Profissionais,
-    "Home": Home,
     "Perfil": Perfil,
+    "Profissionais": Profissionais,
 }
 
 export const pagesConfig = {

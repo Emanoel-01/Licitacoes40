@@ -393,11 +393,10 @@ export default function Filtros() {
 
               <div className="space-y-2">
                 <Label>Palavras-Chave Positivas</Label>
-                <Textarea
+                <Input
                   value={formData.palavras_positivas}
                   onChange={(e) => setFormData(f => ({ ...f, palavras_positivas: e.target.value }))}
-                  placeholder="Restauro, Reforma, Projeto Executivo, Consultoria"
-                  rows={2}
+                  placeholder="Restauro, Reforma, Projeto Executivo, Consultoria, BIM"
                 />
                 <p className="text-xs text-slate-500">
                   Separe por vírgulas. Editais com essas palavras terão prioridade.
@@ -406,11 +405,10 @@ export default function Filtros() {
 
               <div className="space-y-2">
                 <Label>Palavras-Chave Negativas (Descarte)</Label>
-                <Textarea
+                <Input
                   value={formData.palavras_negativas}
                   onChange={(e) => setFormData(f => ({ ...f, palavras_negativas: e.target.value }))}
-                  placeholder="Limpeza Urbana, Locação de Mão de Obra, Pavimentação"
-                  rows={2}
+                  placeholder="Limpeza Urbana, Locação de Mão de Obra, Pavimentação Asfáltica"
                 />
                 <p className="text-xs text-slate-500">
                   Editais com essas palavras serão descartados automaticamente.
@@ -439,14 +437,15 @@ export default function Filtros() {
               </div>
 
               <div className="space-y-2">
-                <Label>Estados de Atuação</Label>
+                <Label>Estados de Atuação (UF)</Label>
                 <Input
                   value={formData.estados_atuacao}
                   onChange={(e) => setFormData(f => ({ ...f, estados_atuacao: e.target.value.toUpperCase() }))}
-                  placeholder="PE, PB, AL, RN"
+                  placeholder="PE, PB, AL, RN, CE"
+                  className="font-mono"
                 />
                 <p className="text-xs text-slate-500">
-                  Siglas separadas por vírgula. Deixe vazio para nacional.
+                  Siglas separadas por vírgula (Ex: PE, PB). Vazio = busca nacional.
                 </p>
               </div>
 
@@ -455,8 +454,11 @@ export default function Filtros() {
                 <Input
                   value={formData.modalidades}
                   onChange={(e) => setFormData(f => ({ ...f, modalidades: e.target.value }))}
-                  placeholder="Pregão, Concorrência, Tomada de Preços"
+                  placeholder="Pregão Eletrônico, Concorrência, Tomada de Preços, RDC"
                 />
+                <p className="text-xs text-slate-500">
+                  Deixe vazio para aceitar todas as modalidades.
+                </p>
               </div>
 
               <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-lg">
