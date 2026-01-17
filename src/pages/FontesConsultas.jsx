@@ -522,10 +522,6 @@ export default function FontesConsultas() {
             </form>
           </DialogContent>
         </Dialog>
-
-        <Card className="hidden">
-
-        </div>
       </div>
 
       {/* Alert de Exclusão */}
