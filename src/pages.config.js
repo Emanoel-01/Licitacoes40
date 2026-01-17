@@ -4,6 +4,8 @@ import Profissionais from './pages/Profissionais';
 import Oportunidades from './pages/Oportunidades';
 import Certidoes from './pages/Certidoes';
 import OportunidadeDetalhe from './pages/OportunidadeDetalhe';
+import Filtros from './pages/Filtros';
+import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
@@ -13,9 +15,11 @@ export const PAGES = {
     "Oportunidades": Oportunidades,
     "Certidoes": Certidoes,
     "OportunidadeDetalhe": OportunidadeDetalhe,
+    "Filtros": Filtros,
 }
 
 export const pagesConfig = {
     mainPage: "Dashboard",
     Pages: PAGES,
+    Layout: __Layout,
 };
