@@ -19,16 +19,17 @@ import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 
 const navigation = [
-  { name: "Dashboard", href: "/Dashboard", icon: LayoutDashboard },
-  { name: "Empresas", href: "/Empresas", icon: Building2 },
-  { name: "Equipe Técnica", href: "/Profissionais", icon: Users },
-  { name: "Acervo Técnico", href: "/AcervoTecnico", icon: FileCheck },
-  { name: "Biblioteca Compliance", href: "/BibliotecaCompliance", icon: FileCheck },
-  { name: "Oportunidades", href: "/Oportunidades", icon: Target },
-  { name: "Filtros de Busca", href: "/Filtros", icon: Filter },
-  { name: "Editor de Propostas", href: "/EditorPropostas", icon: FileCheck },
-  { name: "Fontes de Consulta", href: "/FontesConsultas", icon: Target },
-];
+        { name: "Dashboard", href: "/Dashboard", icon: LayoutDashboard },
+        { name: "Dashboard Compliance", href: "/DashboardCompliance", icon: FileCheck },
+        { name: "Empresas", href: "/Empresas", icon: Building2 },
+        { name: "Equipe Técnica", href: "/Profissionais", icon: Users },
+        { name: "Acervo Técnico", href: "/AcervoTecnico", icon: FileCheck },
+        { name: "Biblioteca Compliance", href: "/BibliotecaCompliance", icon: FileCheck },
+        { name: "Oportunidades", href: "/Oportunidades", icon: Target },
+        { name: "Filtros de Busca", href: "/Filtros", icon: Filter },
+        { name: "Editor de Propostas", href: "/EditorPropostas", icon: FileCheck },
+        { name: "Fontes de Consulta", href: "/FontesConsultas", icon: Target },
+      ];
 
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
