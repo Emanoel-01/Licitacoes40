@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+ 
+@layer base {
+  :root {
+    /* MODO TITANIUM (PADRÃO ESCURO PROFISSIONAL) */
+    --background: 222.2 84% 4.9%; /* Deep Navy */
+    --foreground: 210 40% 98%;    /* White Text */
+ 
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+ 
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+ 
+    --primary: 38 92% 50%; /* Safety Amber (Botões Principais) */
+    --primary-foreground: 222.2 47.4% 11.2%;
+ 
+    --secondary: 217.2 32.6% 17.5%; /* Steel Gray (Botões Secundários) */
+    --secondary-foreground: 210 40% 98%;
+ 
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+ 
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+ 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+ 
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%; /* Blueprint Blue (Foco) */
+ 
+    --radius: 0.3rem; /* Bordas mais retas (Técnico) */
+  }
+}
+ 
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+}
+
+/* CLASSE UTILITÁRIA PARA EFEITO DE VIDRO TÉCNICO */
+.glass-panel {
+  @apply bg-slate-950/70 backdrop-blur-md border border-slate-800/50 shadow-xl;
+}
+
+.tech-border {
+  @apply border border-slate-700/50;
+}

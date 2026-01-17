@@ -37,30 +37,30 @@ export default function Layout({ children, currentPageName }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-background">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/70 z-40 lg:hidden backdrop-blur-sm"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar - Titanium Construct */}
       <aside className={cn(
-        "fixed top-0 left-0 h-full w-64 bg-white border-r border-slate-200 z-50 transform transition-transform duration-300 lg:translate-x-0",
+        "fixed top-0 left-0 h-full w-64 glass-panel z-50 transform transition-transform duration-300 lg:translate-x-0",
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="p-6 border-b border-slate-100">
+          <div className="p-6 border-b border-slate-700/50">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
-                <Target className="w-5 h-5 text-white" />
+              <div className="w-10 h-10 rounded bg-gradient-to-br from-primary to-amber-600 flex items-center justify-center shadow-lg shadow-primary/20">
+                <Target className="w-5 h-5 text-slate-950" />
               </div>
               <div>
-                <h1 className="font-bold text-slate-900">Licitações 4.0</h1>
-                <p className="text-xs text-slate-500">Gestão Inteligente</p>
+                <h1 className="font-bold text-foreground tracking-tight">Licitações 4.0</h1>
+                <p className="text-xs text-muted-foreground font-mono">Engenharia de Precisão</p>
               </div>
             </div>
           </div>
@@ -75,17 +75,17 @@ export default function Layout({ children, currentPageName }) {
                   to={item.href}
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200",
+                    "flex items-center gap-3 px-4 py-3 rounded transition-all duration-200 tech-border",
                     isActive 
-                      ? "bg-slate-900 text-white shadow-lg shadow-slate-900/20" 
-                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 border-primary/50" 
+                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground border-transparent"
                   )}
                 >
                   <item.icon className={cn(
                     "w-5 h-5",
-                    isActive ? "text-white" : "text-slate-400"
+                    isActive ? "text-primary-foreground" : "text-muted-foreground"
                   )} />
-                  <span className="font-medium">{item.name}</span>
+                  <span className="font-medium tracking-wide">{item.name}</span>
                   {isActive && <ChevronRight className="w-4 h-4 ml-auto" />}
                 </Link>
               );
@@ -93,10 +93,10 @@ export default function Layout({ children, currentPageName }) {
           </nav>
 
           {/* Footer */}
-          <div className="p-4 border-t border-slate-100">
+          <div className="p-4 border-t border-slate-700/50">
             <Button 
               variant="ghost" 
-              className="w-full justify-start gap-3 text-slate-600 hover:text-red-600 hover:bg-red-50"
+              className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 border border-transparent hover:border-destructive/20"
               onClick={handleLogout}
             >
               <LogOut className="w-5 h-5" />
@@ -109,7 +109,7 @@ export default function Layout({ children, currentPageName }) {
       {/* Main content */}
       <div className="lg:pl-64">
         {/* Top bar - mobile */}
-        <header className="lg:hidden sticky top-0 z-30 bg-white border-b border-slate-200 px-4 py-3">
+        <header className="lg:hidden sticky top-0 z-30 glass-panel px-4 py-3">
           <div className="flex items-center justify-between">
             <Button 
               variant="ghost" 
@@ -119,17 +119,17 @@ export default function Layout({ children, currentPageName }) {
               <Menu className="w-6 h-6" />
             </Button>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center">
-                <Target className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 rounded bg-gradient-to-br from-primary to-amber-600 flex items-center justify-center">
+                <Target className="w-4 h-4 text-slate-950" />
               </div>
-              <span className="font-semibold text-slate-900">Licitações 4.0</span>
+              <span className="font-semibold text-foreground">Licitações 4.0</span>
             </div>
             <div className="w-10" /> {/* Spacer */}
           </div>
         </header>
 
         {/* Page content */}
-        <main>
+        <main className="min-h-screen">
           {children}
         </main>
       </div>
