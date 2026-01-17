@@ -1,27 +1,29 @@
+import AcervoTecnico from './pages/AcervoTecnico';
+import Certidoes from './pages/Certidoes';
 import Dashboard from './pages/Dashboard';
 import Empresas from './pages/Empresas';
-import Profissionais from './pages/Profissionais';
-import Oportunidades from './pages/Oportunidades';
-import Certidoes from './pages/Certidoes';
-import OportunidadeDetalhe from './pages/OportunidadeDetalhe';
 import Filtros from './pages/Filtros';
 import FontesConsultas from './pages/FontesConsultas';
-import AcervoTecnico from './pages/AcervoTecnico';
 import LandingPage from './pages/LandingPage';
+import OportunidadeDetalhe from './pages/OportunidadeDetalhe';
+import Oportunidades from './pages/Oportunidades';
+import Profissionais from './pages/Profissionais';
+import Home from './pages/Home';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "AcervoTecnico": AcervoTecnico,
+    "Certidoes": Certidoes,
     "Dashboard": Dashboard,
     "Empresas": Empresas,
-    "Profissionais": Profissionais,
-    "Oportunidades": Oportunidades,
-    "Certidoes": Certidoes,
-    "OportunidadeDetalhe": OportunidadeDetalhe,
     "Filtros": Filtros,
     "FontesConsultas": FontesConsultas,
-    "AcervoTecnico": AcervoTecnico,
     "LandingPage": LandingPage,
+    "OportunidadeDetalhe": OportunidadeDetalhe,
+    "Oportunidades": Oportunidades,
+    "Profissionais": Profissionais,
+    "Home": Home,
 }
 
 export const pagesConfig = {
