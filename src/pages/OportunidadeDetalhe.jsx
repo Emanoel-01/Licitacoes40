@@ -191,7 +191,7 @@ Seja objetivo, técnico e forneça um score de 0 a 100.`,
     <div className="min-h-screen bg-background">
       <div className="max-w-5xl mx-auto px-6 py-8">
         {/* Header */}
-        <div className="flex items-start justify-between mb-8">
+        <div className="flex flex-col sm:flex-row items-start justify-between mb-6 md:mb-8 gap-4">
           <div>
             <Link 
               to={createPageUrl("Oportunidades")}
@@ -203,7 +203,7 @@ Seja objetivo, técnico e forneça um score de 0 a 100.`,
             <h1 className="text-2xl font-bold text-slate-900 mb-2">
               {oportunidade.objeto}
             </h1>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 md:gap-3">
               <Badge variant="outline" className={cn("border", config.color)}>
                 {config.label}
               </Badge>
@@ -219,23 +219,25 @@ Seja objetivo, técnico e forneça um score de 0 a 100.`,
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 md:gap-3 w-full sm:w-auto">
             <Button 
               variant="outline" 
               onClick={handleAnalyze}
               disabled={isAnalyzing}
-              className="gap-2"
+              className="gap-2 flex-1 sm:flex-none"
             >
               <Sparkles className="w-4 h-4" />
-              {isAnalyzing ? "Analisando..." : "Analisar com IA"}
+              <span className="hidden sm:inline">{isAnalyzing ? "Analisando..." : "Analisar com IA"}</span>
+              <span className="sm:hidden">IA</span>
             </Button>
             <Button 
               onClick={handleSave}
               disabled={updateMutation.isPending}
-              className="gap-2 bg-slate-900 hover:bg-slate-800"
+              className="gap-2 bg-slate-900 hover:bg-slate-800 flex-1 sm:flex-none"
             >
               <Save className="w-4 h-4" />
-              {updateMutation.isPending ? "Salvando..." : "Salvar"}
+              <span className="hidden sm:inline">{updateMutation.isPending ? "Salvando..." : "Salvar"}</span>
+              <span className="sm:hidden">Salvar</span>
             </Button>
             <Button 
               variant="outline" 
@@ -247,18 +249,18 @@ Seja objetivo, técnico e forneça um score de 0 a 100.`,
           </div>
         </div>
 
-        <Tabs defaultValue="info" className="space-y-6">
-          <TabsList className="bg-white border border-slate-200 p-1">
+        <Tabs defaultValue="info" className="space-y-4 md:space-y-6">
+          <TabsList className="bg-white border border-slate-200 p-1 w-full sm:w-auto grid grid-cols-3 sm:inline-grid sm:grid-cols-none">
             <TabsTrigger value="info">Informações</TabsTrigger>
             <TabsTrigger value="proposta">Proposta</TabsTrigger>
             <TabsTrigger value="equipe">Equipe Técnica</TabsTrigger>
           </TabsList>
 
           {/* Tab: Informações */}
-          <TabsContent value="info" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <TabsContent value="info" className="space-y-4 md:space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
               {/* Dados Principais */}
-              <div className="lg:col-span-2 space-y-6">
+              <div className="lg:col-span-2 space-y-4 md:space-y-6">
                 <Card className="border-slate-200">
                   <CardHeader className="pb-4">
                     <CardTitle className="text-lg">Dados do Edital</CardTitle>
@@ -441,7 +443,7 @@ Seja objetivo, técnico e forneça um score de 0 a 100.`,
               </div>
 
               {/* Sidebar */}
-              <div className="space-y-6">
+              <div className="space-y-4 md:space-y-6">
                 <Card className="border-slate-200">
                   <CardHeader className="pb-4">
                     <CardTitle className="text-lg flex items-center gap-2">

@@ -136,7 +136,7 @@ export default function AcervoTecnico() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 gap-4">
           <div>
             <h1 className="text-3xl font-bold text-foreground tracking-tight flex items-center gap-3">
               <Briefcase className="h-8 w-8 text-primary" />
@@ -148,20 +148,21 @@ export default function AcervoTecnico() {
           </div>
           <Button 
             onClick={() => setShowForm(true)}
-            className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20"
+            className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 w-full sm:w-auto"
           >
             <Plus className="w-4 h-4" />
-            Novo Documento
+            <span className="hidden sm:inline">Novo Documento</span>
+            <span className="sm:hidden">Novo</span>
           </Button>
         </div>
 
         {/* Filtro por Profissional */}
         <Card className="mb-6 glass-panel tech-border">
           <CardContent className="pt-6">
-            <div className="flex items-center gap-4">
-              <Label className="min-w-[150px]">Filtrar por Profissional:</Label>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <Label className="sm:min-w-[150px]">Filtrar por Profissional:</Label>
               <Select value={selectedProfissional} onValueChange={setSelectedProfissional}>
-                <SelectTrigger className="max-w-md">
+                <SelectTrigger className="w-full sm:max-w-md">
                   <SelectValue placeholder="Todos os profissionais" />
                 </SelectTrigger>
                 <SelectContent>
@@ -212,7 +213,7 @@ export default function AcervoTecnico() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {filteredAcervos.map((acervo) => (
               <Card key={acervo.id} className="group hover:shadow-xl transition-all glass-panel tech-border hover:border-primary/50">
                 <CardHeader className="border-b border-slate-100">

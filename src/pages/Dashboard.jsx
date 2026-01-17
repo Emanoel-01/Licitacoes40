@@ -156,7 +156,7 @@ export default function Dashboard() {
         </div>
 
         {/* Status Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
           <StatusCard
             title="Empresas Ativas"
             value={empresas.filter(e => e.status === "ativo").length}
@@ -187,11 +187,11 @@ export default function Dashboard() {
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
           {/* Coluna Principal - Oportunidades */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 md:space-y-6">
             <Card className="glass-panel tech-border shadow-sm">
-              <CardHeader className="flex flex-row items-center justify-between pb-4">
+              <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 space-y-2 sm:space-y-0">
                 <CardTitle className="text-lg font-semibold flex items-center gap-2">
                   <Target className="w-5 h-5 text-blue-600" />
                   Oportunidades Recentes
@@ -215,7 +215,7 @@ export default function Dashboard() {
                     </Link>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     {oportunidades.slice(0, 4).map((oportunidade) => (
                       <OportunidadeCard 
                         key={oportunidade.id} 
@@ -274,7 +274,7 @@ export default function Dashboard() {
           </div>
 
           {/* Sidebar - Alertas */}
-          <div className="space-y-6">
+          <div className="space-y-4 md:space-y-6">
             {/* Alertas de Certidões */}
             <Card className="glass-panel tech-border shadow-sm">
               <CardHeader className="pb-4">

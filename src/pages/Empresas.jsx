@@ -124,7 +124,7 @@ export default function Empresas() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 gap-4">
           <div>
             <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
               Empresas
@@ -155,7 +155,7 @@ export default function Empresas() {
 
         {/* Grid de Empresas */}
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {[1, 2, 3].map((i) => (
               <Card key={i} className="animate-pulse">
                 <CardContent className="p-6">
@@ -168,7 +168,7 @@ export default function Empresas() {
           </div>
         ) : filteredEmpresas.length === 0 ? (
           <Card className="border-dashed border-2 border-slate-300">
-            <CardContent className="py-16 text-center">
+            <CardContent className="py-12 md:py-16 text-center px-4">
               <Building2 className="w-16 h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-slate-700 mb-2">
                 {searchTerm ? "Nenhuma empresa encontrada" : "Nenhuma empresa cadastrada"}
@@ -185,7 +185,7 @@ export default function Empresas() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {filteredEmpresas.map((empresa) => {
               const certStatus = getCertidoesStatus(empresa.id);
               const profCount = getProfissionaisCount(empresa.id);
