@@ -91,10 +91,14 @@ export default function Empresas() {
   });
 
   const handleSave = async (data) => {
-    if (editingEmpresa) {
-      await updateMutation.mutateAsync({ id: editingEmpresa.id, data });
-    } else {
-      await createMutation.mutateAsync(data);
+    try {
+      if (editingEmpresa) {
+        await updateMutation.mutateAsync({ id: editingEmpresa.id, data });
+      } else {
+        await createMutation.mutateAsync(data);
+      }
+    } catch (error) {
+      console.error("Erro ao salvar empresa:", error);
     }
   };
 
