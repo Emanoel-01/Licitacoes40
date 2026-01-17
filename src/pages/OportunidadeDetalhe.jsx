@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { createPageUrl } from "./utils";
+
 import { 
   ArrowLeft, 
   Building2, 
@@ -94,7 +94,7 @@ export default function OportunidadeDetalhe() {
   const deleteMutation = useMutation({
     mutationFn: () => base44.entities.Oportunidade.delete(oportunidadeId),
     onSuccess: () => {
-      window.location.href = createPageUrl("Oportunidades");
+      window.location.href = "/Oportunidades";
     }
   });
 

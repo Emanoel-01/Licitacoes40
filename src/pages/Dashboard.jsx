@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { createPageUrl } from "./utils";
 import StatusCard from "@/components/dashboard/StatusCard";
 import CertidaoAlert from "@/components/dashboard/CertidaoAlert";
 import OportunidadeCard from "@/components/dashboard/OportunidadeCard";
@@ -93,13 +92,13 @@ export default function Dashboard() {
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <Link to={createPageUrl("Oportunidades")}>
+              <Link to="/Oportunidades">
                 <Button variant="outline" className="gap-2">
                   <Search className="w-4 h-4" />
                   Buscar Editais
                 </Button>
               </Link>
-              <Link to={createPageUrl("Empresas")}>
+              <Link to="/Empresas">
                 <Button className="gap-2 bg-slate-900 hover:bg-slate-800">
                   <Building2 className="w-4 h-4" />
                   Nova Empresa
@@ -150,7 +149,7 @@ export default function Dashboard() {
                   <Target className="w-5 h-5 text-blue-600" />
                   Oportunidades Recentes
                 </CardTitle>
-                <Link to={createPageUrl("Oportunidades")}>
+                <Link to="/Oportunidades">
                   <Button variant="ghost" size="sm" className="gap-1 text-slate-600">
                     Ver todas
                     <ArrowRight className="w-4 h-4" />
@@ -162,7 +161,7 @@ export default function Dashboard() {
                   <div className="text-center py-12">
                     <Target className="w-12 h-12 text-slate-300 mx-auto mb-4" />
                     <p className="text-slate-500 mb-4">Nenhuma oportunidade cadastrada</p>
-                    <Link to={createPageUrl("Oportunidades")}>
+                    <Link to="/Oportunidades">
                       <Button variant="outline" size="sm">
                         Buscar Editais
                       </Button>
@@ -174,7 +173,7 @@ export default function Dashboard() {
                       <OportunidadeCard 
                         key={oportunidade.id} 
                         oportunidade={oportunidade}
-                        onClick={() => window.location.href = createPageUrl("OportunidadeDetalhe") + `?id=${oportunidade.id}`}
+                        onClick={() => window.location.href = `/OportunidadeDetalhe?id=${oportunidade.id}`}
                       />
                     ))}
                   </div>
@@ -205,7 +204,7 @@ export default function Dashboard() {
                         <div 
                           key={o.id}
                           className="flex items-center justify-between p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
-                          onClick={() => window.location.href = createPageUrl("OportunidadeDetalhe") + `?id=${o.id}`}
+                          onClick={() => window.location.href = `/OportunidadeDetalhe?id=${o.id}`}
                         >
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-slate-900 truncate">{o.objeto}</p>
@@ -258,7 +257,7 @@ export default function Dashboard() {
                       />
                     ))}
                     {(certidoesVencidas.length + certidoesAlerta.length) > 5 && (
-                      <Link to={createPageUrl("Certidoes")}>
+                      <Link to="/Certidoes">
                         <Button variant="ghost" size="sm" className="w-full gap-1">
                           Ver todos os {certidoesVencidas.length + certidoesAlerta.length} alertas
                           <ArrowRight className="w-4 h-4" />
@@ -307,25 +306,25 @@ export default function Dashboard() {
                 <CardTitle className="text-lg font-semibold">Acesso Rápido</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <Link to={createPageUrl("Empresas")} className="block">
+                <Link to="/Empresas" className="block">
                   <Button variant="outline" className="w-full justify-start gap-3">
                     <Building2 className="w-4 h-4" />
                     Gerenciar Empresas
                   </Button>
                 </Link>
-                <Link to={createPageUrl("Profissionais")} className="block">
+                <Link to="/Profissionais" className="block">
                   <Button variant="outline" className="w-full justify-start gap-3">
                     <Users className="w-4 h-4" />
                     Equipe Técnica
                   </Button>
                 </Link>
-                <Link to={createPageUrl("Certidoes")} className="block">
+                <Link to="/Certidoes" className="block">
                   <Button variant="outline" className="w-full justify-start gap-3">
                     <FileCheck className="w-4 h-4" />
                     Gestão de Certidões
                   </Button>
                 </Link>
-                <Link to={createPageUrl("Filtros")} className="block">
+                <Link to="/Filtros" className="block">
                   <Button variant="outline" className="w-full justify-start gap-3">
                     <Filter className="w-4 h-4" />
                     Filtros de Busca
