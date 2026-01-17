@@ -10,6 +10,8 @@ import { Upload, User, FileText, Save, X } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 export default function ProfissionalForm({ profissional, empresaId, onSave, onCancel }) {
+  const [uploadingCRQ, setUploadingCRQ] = useState(false);
+
   const [formData, setFormData] = useState(profissional || {
     empresa_id: empresaId || "",
     nome: "",
