@@ -16,7 +16,11 @@ import {
   CheckCircle,
   Clock,
   TrendingUp,
-  Sparkles
+  Sparkles,
+  Upload,
+  File,
+  Loader2,
+  ClipboardList
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -48,6 +52,7 @@ export default function OportunidadeDetalhe() {
   const [editData, setEditData] = useState({});
   const [selectedProfissionais, setSelectedProfissionais] = useState([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   
   const queryClient = useQueryClient();
 
@@ -107,47 +112,103 @@ export default function OportunidadeDetalhe() {
     });
   };
 
-  const handleAnalyze = async () => {
+  const handleUploadEdital = async (file) => {
+    if (!file) return;
+    
+    setIsUploading(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      await updateMutation.mutateAsync({ edital_pdf_url: file_url });
+      toast.success("Edital enviado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao enviar edital:", error);
+      toast.error("Erro ao enviar arquivo.");
+    }
+    setIsUploading(false);
+  };
+
+  const handleAnalyzeWithPDF = async () => {
     setIsAnalyzing(true);
-    toast.info("Agente está lendo o edital... Aguarde.");
+    toast.info("Agente está analisando o edital... Aguarde.");
     
     try {
+      const fileUrls = oportunidade.edital_pdf_url ? [oportunidade.edital_pdf_url] : undefined;
+      
       const result = await base44.integrations.Core.InvokeLLM({
-        prompt: `Analise esta oportunidade de licitação e forneça uma avaliação estratégica detalhada:
+        prompt: `Você é um especialista em licitações e análise de editais. Analise este edital e extraia as seguintes informações estruturadas:
 
-OBJETO: ${oportunidade.objeto}
-ÓRGÃO: ${oportunidade.orgao_licitante}
-MODALIDADE: ${oportunidade.modalidade}
-VALOR ESTIMADO: R$ ${oportunidade.valor_estimado?.toLocaleString('pt-BR')}
-LOCAL: ${oportunidade.municipio || ''}, ${oportunidade.uf || ''}
+IMPORTANTE: Se o arquivo PDF foi fornecido, extraia as informações DIRETAMENTE do documento. Senão, use as informações fornecidas.
 
-Forneça uma análise completa com:
-1. QUALIFICAÇÃO TÉCNICA: Requisitos técnicos prováveis e documentação necessária
-2. HABILITAÇÃO: Pontos de atenção para documentação jurídica e fiscal
-3. CRONOGRAMA: Análise do prazo e viabilidade de execução
-4. RISCOS: Principais riscos identificados
-5. CONCLUSÃO: Classificação de risco (Baixo/Médio/Alto) e recomendação
+Contexto atual:
+- OBJETO: ${oportunidade.objeto}
+- ÓRGÃO: ${oportunidade.orgao_licitante}
+- MODALIDADE: ${oportunidade.modalidade}
+- VALOR ESTIMADO: R$ ${oportunidade.valor_estimado?.toLocaleString('pt-BR') || 'Não informado'}
+- LOCAL: ${oportunidade.municipio || ''}, ${oportunidade.uf || ''}
 
-Seja objetivo, técnico e forneça um score de 0 a 100.`,
+Extraia e forneça em JSON:
+1. numero_edital: Número exato do edital
+2. data_abertura: Data e hora da abertura (ISO format)
+3. data_limite_proposta: Prazo limite para propostas (ISO format)
+4. valor_estimado: Valor estimado (número)
+5. requisitos_tecnicos: Lista dos principais requisitos técnicos
+6. documentacao_necessaria: Lista de documentos obrigatórios
+7. analise_viabilidade: Análise estratégica da oportunidade
+8. score_compatibilidade: Score de 0-100
+9. checklist_tarefas: Array com tarefas necessárias para montar a proposta
+
+Seja preciso e objetivo.`,
         response_json_schema: {
           type: "object",
           properties: {
-            analise: { type: "string" },
-            score: { type: "number" },
-            recomendacao: { type: "string" }
+            numero_edital: { type: "string" },
+            data_abertura: { type: "string" },
+            data_limite_proposta: { type: "string" },
+            valor_estimado: { type: "number" },
+            requisitos_tecnicos: { type: "array", items: { type: "string" } },
+            documentacao_necessaria: { type: "array", items: { type: "string" } },
+            analise_viabilidade: { type: "string" },
+            score_compatibilidade: { type: "number" },
+            checklist_tarefas: { 
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  categoria: { type: "string" },
+                  tarefa: { type: "string" },
+                  obrigatorio: { type: "boolean" }
+                }
+              }
+            }
           }
-        }
+        },
+        file_urls: fileUrls
       });
 
+      // Estruturar o checklist
+      const checklistFormatado = result.checklist_tarefas?.map((item, idx) => ({
+        id: `task-${idx}`,
+        categoria: item.categoria,
+        tarefa: item.tarefa,
+        obrigatorio: item.obrigatorio ?? true,
+        concluido: false
+      })) || [];
+
       await updateMutation.mutateAsync({
-        analise_ia: result.analise,
-        score_compatibilidade: result.score
+        numero_edital: result.numero_edital,
+        data_abertura: result.data_abertura,
+        data_limite_proposta: result.data_limite_proposta,
+        valor_estimado: result.valor_estimado,
+        analise_ia: result.analise_viabilidade,
+        score_compatibilidade: result.score_compatibilidade,
+        checklist_proposta: checklistFormatado,
+        observacoes: `Requisitos técnicos: ${result.requisitos_tecnicos?.join(', ')}\nDocumentação: ${result.documentacao_necessaria?.join(', ')}`
       });
       
-      toast.success("Análise de Viabilidade concluída!");
+      toast.success("Edital analisado e dados preenchidos automaticamente!");
     } catch (error) {
       console.error("Erro na análise:", error);
-      toast.error("Erro ao solicitar análise.");
+      toast.error("Erro ao analisar edital.");
     }
     setIsAnalyzing(false);
   };
@@ -222,13 +283,22 @@ Seja objetivo, técnico e forneça um score de 0 a 100.`,
           <div className="flex flex-wrap items-center gap-2 md:gap-3 w-full sm:w-auto">
             <Button 
               variant="outline" 
-              onClick={handleAnalyze}
+              onClick={handleAnalyzeWithPDF}
               disabled={isAnalyzing}
               className="gap-2 flex-1 sm:flex-none"
             >
-              <Sparkles className="w-4 h-4" />
-              <span className="hidden sm:inline">{isAnalyzing ? "Analisando..." : "Analisar com IA"}</span>
-              <span className="sm:hidden">IA</span>
+              {isAnalyzing ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="hidden sm:inline">Analisando...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4" />
+                  <span className="hidden sm:inline">Analisar Edital</span>
+                  <span className="sm:hidden">IA</span>
+                </>
+              )}
             </Button>
             <Button 
               onClick={handleSave}
@@ -250,10 +320,11 @@ Seja objetivo, técnico e forneça um score de 0 a 100.`,
         </div>
 
         <Tabs defaultValue="info" className="space-y-4 md:space-y-6">
-          <TabsList className="bg-white border border-slate-200 p-1 w-full sm:w-auto grid grid-cols-3 sm:inline-grid sm:grid-cols-none">
+          <TabsList className="bg-white border border-slate-200 p-1 w-full sm:w-auto grid grid-cols-4 sm:inline-grid sm:grid-cols-none">
             <TabsTrigger value="info">Informações</TabsTrigger>
-            <TabsTrigger value="proposta">Proposta</TabsTrigger>
-            <TabsTrigger value="equipe">Equipe Técnica</TabsTrigger>
+            <TabsTrigger value="proposta">Checklist</TabsTrigger>
+            <TabsTrigger value="tecnica">Proposta</TabsTrigger>
+            <TabsTrigger value="equipe">Equipe</TabsTrigger>
           </TabsList>
 
           {/* Tab: Informações */}
@@ -380,6 +451,48 @@ Seja objetivo, técnico e forneça um score de 0 a 100.`,
                         )}
                       </div>
                     </div>
+
+                    <div className="space-y-2">
+                      <Label>PDF do Edital</Label>
+                      <div className="border-2 border-dashed border-slate-300 rounded-lg p-4 text-center hover:border-slate-400 transition-colors">
+                        {editData.edital_pdf_url ? (
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-center gap-2 text-emerald-600">
+                              <File className="w-5 h-5" />
+                              <span className="text-sm font-medium">Edital enviado</span>
+                            </div>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => window.open(editData.edital_pdf_url, '_blank')}
+                              className="w-full"
+                            >
+                              <ExternalLink className="w-3 h-3 mr-2" />
+                              Visualizar PDF
+                            </Button>
+                          </div>
+                        ) : (
+                          <label className="cursor-pointer block">
+                            <div className="flex flex-col items-center gap-2">
+                              <Upload className="w-5 h-5 text-slate-400" />
+                              <p className="text-sm text-slate-600">
+                                Clique para enviar PDF do edital
+                              </p>
+                              <p className="text-xs text-slate-500">
+                                A IA analisará automaticamente
+                              </p>
+                            </div>
+                            <input
+                              type="file"
+                              accept=".pdf"
+                              className="hidden"
+                              onChange={(e) => handleUploadEdital(e.target.files?.[0])}
+                              disabled={isUploading}
+                            />
+                          </label>
+                        )}
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
 
@@ -393,26 +506,7 @@ Seja objetivo, técnico e forneça um score de 0 a 100.`,
                       <Sparkles className="w-5 h-5 text-primary" />
                       Análise de Viabilidade (IA Agent)
                     </CardTitle>
-                    {!oportunidade.analise_ia && (
-                      <Button 
-                        size="sm" 
-                        onClick={handleAnalyze}
-                        disabled={isAnalyzing}
-                        className="bg-primary text-primary-foreground hover:bg-primary/90"
-                      >
-                        {isAnalyzing ? (
-                          <>
-                            <Clock className="mr-2 h-4 w-4 animate-spin" />
-                            Processando...
-                          </>
-                        ) : (
-                          <>
-                            <Sparkles className="mr-2 h-4 w-4" />
-                            Gerar Análise
-                          </>
-                        )}
-                      </Button>
-                    )}
+
                   </CardHeader>
                   <CardContent>
                     {oportunidade.analise_ia ? (
@@ -420,16 +514,7 @@ Seja objetivo, técnico e forneça um score de 0 a 100.`,
                         <div className="p-4 rounded-md glass-panel tech-border text-sm leading-relaxed whitespace-pre-line text-foreground font-mono">
                           {oportunidade.analise_ia}
                         </div>
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={handleAnalyze}
-                          disabled={isAnalyzing}
-                          className="w-full"
-                        >
-                          <Sparkles className="mr-2 h-4 w-4" />
-                          Atualizar Análise
-                        </Button>
+
                       </div>
                     ) : (
                       <div className="text-center py-8 text-muted-foreground">
@@ -509,8 +594,84 @@ Seja objetivo, técnico e forneça um score de 0 a 100.`,
             </div>
           </TabsContent>
 
-          {/* Tab: Proposta */}
-          <TabsContent value="proposta">
+          {/* Tab: Checklist */}
+          <TabsContent value="proposta" className="space-y-4">
+            {editData.checklist_proposta && editData.checklist_proposta.length > 0 ? (
+              <>
+                <Card className="border-slate-200">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <ClipboardList className="w-5 h-5 text-slate-400" />
+                      Checklist de Documentos e Tarefas
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {editData.checklist_proposta.map((item) => (
+                      <div 
+                        key={item.id}
+                        className="flex items-start gap-3 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors"
+                      >
+                        <Checkbox
+                          checked={item.concluido || false}
+                          onCheckedChange={(checked) => {
+                            const updated = editData.checklist_proposta.map(i =>
+                              i.id === item.id ? { ...i, concluido: checked } : i
+                            );
+                            setEditData(d => ({ ...d, checklist_proposta: updated }));
+                          }}
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <p className={cn(
+                              "font-medium text-slate-900",
+                              item.concluido && "line-through text-slate-500"
+                            )}>
+                              {item.tarefa}
+                            </p>
+                            <Badge variant="outline" className="text-xs">
+                              {item.categoria}
+                            </Badge>
+                            {item.obrigatorio && (
+                              <Badge className="bg-red-100 text-red-700 text-xs">
+                                Obrigatório
+                              </Badge>
+                            )}
+                          </div>
+                          {item.observacoes && (
+                            <p className="text-xs text-slate-500 mt-1">
+                              {item.observacoes}
+                            </p>
+                          )}
+                        </div>
+                        {item.concluido && (
+                          <CheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                        )}
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-900">
+                    <span className="font-semibold">💡 Dica:</span> Marque as tarefas conforme forem concluídas. Próximo passo: adicionar propostas técnicas e documentos.
+                  </p>
+                </div>
+              </>
+            ) : (
+              <Card className="border-dashed border-2 border-slate-300">
+                <CardContent className="py-12 text-center">
+                  <ClipboardList className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                  <p className="text-slate-600 mb-3">Nenhum checklist gerado ainda</p>
+                  <p className="text-sm text-slate-500 mb-4">
+                    Envie o PDF do edital e clique em "Analisar Edital" para gerar automaticamente o checklist de documentos necessários
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          {/* Tab: Proposta Técnica */}
+          <TabsContent value="tecnica">
             <Card className="border-slate-200">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg flex items-center gap-2">

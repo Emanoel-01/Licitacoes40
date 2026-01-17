@@ -1,4 +1,5 @@
 import AcervoTecnico from './pages/AcervoTecnico';
+import BibliotecaCompliance from './pages/BibliotecaCompliance';
 import Certidoes from './pages/Certidoes';
 import Dashboard from './pages/Dashboard';
 import Empresas from './pages/Empresas';
@@ -10,12 +11,12 @@ import OportunidadeDetalhe from './pages/OportunidadeDetalhe';
 import Oportunidades from './pages/Oportunidades';
 import Perfil from './pages/Perfil';
 import Profissionais from './pages/Profissionais';
-import BibliotecaCompliance from './pages/BibliotecaCompliance';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AcervoTecnico": AcervoTecnico,
+    "BibliotecaCompliance": BibliotecaCompliance,
     "Certidoes": Certidoes,
     "Dashboard": Dashboard,
     "Empresas": Empresas,
@@ -27,7 +28,6 @@ export const PAGES = {
     "Oportunidades": Oportunidades,
     "Perfil": Perfil,
     "Profissionais": Profissionais,
-    "BibliotecaCompliance": BibliotecaCompliance,
 }
 
 export const pagesConfig = {
