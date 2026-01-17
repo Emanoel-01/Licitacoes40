@@ -39,6 +39,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
 import moment from "moment";
+import { toast } from "sonner";
+import { createPageUrl } from "@/utils";
 
 export default function OportunidadeDetalhe() {
   const [oportunidadeId, setOportunidadeId] = useState(null);
@@ -107,9 +109,11 @@ export default function OportunidadeDetalhe() {
 
   const handleAnalyze = async () => {
     setIsAnalyzing(true);
+    toast.info("Agente está lendo o edital... Aguarde.");
+    
     try {
       const result = await base44.integrations.Core.InvokeLLM({
-        prompt: `Analise esta oportunidade de licitação e forneça uma avaliação estratégica:
+        prompt: `Analise esta oportunidade de licitação e forneça uma avaliação estratégica detalhada:
 
 OBJETO: ${oportunidade.objeto}
 ÓRGÃO: ${oportunidade.orgao_licitante}
@@ -117,14 +121,14 @@ MODALIDADE: ${oportunidade.modalidade}
 VALOR ESTIMADO: R$ ${oportunidade.valor_estimado?.toLocaleString('pt-BR')}
 LOCAL: ${oportunidade.municipio || ''}, ${oportunidade.uf || ''}
 
-Forneça:
-1. Pontos de atenção para habilitação
-2. Requisitos técnicos prováveis
-3. Riscos identificados
-4. Recomendação de participação (alta/média/baixa)
-5. Score de compatibilidade de 0 a 100
+Forneça uma análise completa com:
+1. QUALIFICAÇÃO TÉCNICA: Requisitos técnicos prováveis e documentação necessária
+2. HABILITAÇÃO: Pontos de atenção para documentação jurídica e fiscal
+3. CRONOGRAMA: Análise do prazo e viabilidade de execução
+4. RISCOS: Principais riscos identificados
+5. CONCLUSÃO: Classificação de risco (Baixo/Médio/Alto) e recomendação
 
-Seja objetivo e conciso.`,
+Seja objetivo, técnico e forneça um score de 0 a 100.`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -139,8 +143,11 @@ Seja objetivo e conciso.`,
         analise_ia: result.analise,
         score_compatibilidade: result.score
       });
+      
+      toast.success("Análise de Viabilidade concluída!");
     } catch (error) {
       console.error("Erro na análise:", error);
+      toast.error("Erro ao solicitar análise.");
     }
     setIsAnalyzing(false);
   };
@@ -181,7 +188,7 @@ Seja objetivo e conciso.`,
   const config = statusConfig[oportunidade.status] || statusConfig.nova;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
+    <div className="min-h-screen bg-background">
       <div className="max-w-5xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="flex items-start justify-between mb-8">
@@ -374,22 +381,63 @@ Seja objetivo e conciso.`,
                   </CardContent>
                 </Card>
 
-                {/* Análise IA */}
-                {oportunidade.analise_ia && (
-                  <Card className="border-slate-200 bg-gradient-to-br from-purple-50 to-blue-50">
-                    <CardHeader className="pb-4">
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <Sparkles className="w-5 h-5 text-purple-600" />
-                        Análise da IA
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-slate-700 whitespace-pre-wrap">
-                        {oportunidade.analise_ia}
-                      </p>
-                    </CardContent>
-                  </Card>
-                )}
+                {/* Análise IA - Painel de Inteligência */}
+                <Card className={cn(
+                  "tech-border transition-all",
+                  oportunidade.analise_ia ? "border-primary/30 bg-primary/5" : "border-slate-700/50 glass-panel"
+                )}>
+                  <CardHeader className="flex flex-row items-center justify-between pb-4">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Sparkles className="w-5 h-5 text-primary" />
+                      Análise de Viabilidade (IA Agent)
+                    </CardTitle>
+                    {!oportunidade.analise_ia && (
+                      <Button 
+                        size="sm" 
+                        onClick={handleAnalyze}
+                        disabled={isAnalyzing}
+                        className="bg-primary text-primary-foreground hover:bg-primary/90"
+                      >
+                        {isAnalyzing ? (
+                          <>
+                            <Clock className="mr-2 h-4 w-4 animate-spin" />
+                            Processando...
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="mr-2 h-4 w-4" />
+                            Gerar Análise
+                          </>
+                        )}
+                      </Button>
+                    )}
+                  </CardHeader>
+                  <CardContent>
+                    {oportunidade.analise_ia ? (
+                      <div className="space-y-4">
+                        <div className="p-4 rounded-md glass-panel tech-border text-sm leading-relaxed whitespace-pre-line text-foreground font-mono">
+                          {oportunidade.analise_ia}
+                        </div>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={handleAnalyze}
+                          disabled={isAnalyzing}
+                          className="w-full"
+                        >
+                          <Sparkles className="mr-2 h-4 w-4" />
+                          Atualizar Análise
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <Sparkles className="h-10 w-10 mx-auto mb-3 opacity-20" />
+                        <p>O Agente ainda não processou este edital.</p>
+                        <p className="text-xs mt-2">Clique em "Gerar Análise" para iniciar</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
               </div>
 
               {/* Sidebar */}

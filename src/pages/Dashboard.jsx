@@ -21,6 +21,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import moment from "moment";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function Dashboard() {
   const { data: empresas = [] } = useQuery({
@@ -77,9 +78,55 @@ export default function Dashboard() {
     }).format(value);
   };
 
+  const alertasCriticos = [...certidoesVencidas, ...certidoesAlerta]
+    .slice(0, 2)
+    .map(c => {
+      const empresa = empresas.find(e => e.id === c.empresa_id);
+      const diasRestantes = c.data_validade ? moment(c.data_validade).diff(moment(), 'days') : 0;
+      return {
+        nome: c.tipo,
+        empresa: empresa?.nome_fantasia || "Empresa não identificada",
+        dias: diasRestantes
+      };
+    });
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* ALERTA CRÍTICO - Só aparece se houver risco */}
+        {(certidoesVencidas.length > 0 || certidoesAlerta.length > 0) && (
+          <Alert variant="destructive" className="mb-8 border-red-600/50 bg-red-950/30 shadow-lg shadow-red-900/10">
+            <AlertTriangle className="h-5 w-5 text-red-500" />
+            <AlertTitle className="text-red-500 font-bold text-lg ml-2">
+              Atenção: Risco de Inabilitação
+            </AlertTitle>
+            <AlertDescription className="ml-2 mt-2">
+              <p className="text-red-200 mb-3">
+                O Robô Auditor identificou <strong>{certidoesVencidas.length + certidoesAlerta.length} documentos</strong> próximos do vencimento ou vencidos. 
+                Renove imediatamente para não perder licitações.
+              </p>
+              <div className="space-y-2 mb-4">
+                {alertasCriticos.map((alerta, i) => (
+                  <div key={i} className="flex items-center justify-between bg-red-950/50 p-3 rounded tech-border border-red-900/50 text-sm">
+                    <span className="text-red-100">
+                      {alerta.nome} - <span className="opacity-70">{alerta.empresa}</span>
+                    </span>
+                    <span className="font-bold text-red-400 font-mono">
+                      {alerta.dias <= 0 ? "VENCIDO" : `Vence em ${alerta.dias} dias`}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <Link to="/Certidoes">
+                <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white w-full md:w-auto">
+                  <AlertTriangle className="mr-2 h-4 w-4" />
+                  Resolver Pendências Agora
+                </Button>
+              </Link>
+            </AlertDescription>
+          </Alert>
+        )}
+
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -143,7 +190,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Coluna Principal - Oportunidades */}
           <div className="lg:col-span-2 space-y-6">
-            <Card className="border-slate-200 shadow-sm">
+            <Card className="glass-panel tech-border shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between pb-4">
                 <CardTitle className="text-lg font-semibold flex items-center gap-2">
                   <Target className="w-5 h-5 text-blue-600" />
@@ -182,7 +229,7 @@ export default function Dashboard() {
             </Card>
 
             {/* Próximas Aberturas */}
-            <Card className="border-slate-200 shadow-sm">
+            <Card className="glass-panel tech-border shadow-sm">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-semibold flex items-center gap-2">
                   <Calendar className="w-5 h-5 text-amber-600" />
@@ -229,7 +276,7 @@ export default function Dashboard() {
           {/* Sidebar - Alertas */}
           <div className="space-y-6">
             {/* Alertas de Certidões */}
-            <Card className="border-slate-200 shadow-sm">
+            <Card className="glass-panel tech-border shadow-sm">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-semibold flex items-center gap-2">
                   <AlertTriangle className="w-5 h-5 text-amber-600" />
@@ -301,7 +348,7 @@ export default function Dashboard() {
             </Card>
 
             {/* Links Rápidos */}
-            <Card className="border-slate-200 shadow-sm">
+            <Card className="glass-panel tech-border shadow-sm">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-semibold">Acesso Rápido</CardTitle>
               </CardHeader>
