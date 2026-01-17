@@ -227,6 +227,26 @@ export default function EmpresaForm({ empresa, onSave, onCancel }) {
           </div>
 
           <div className="space-y-2">
+            <Label htmlFor="contrato_social_url">Contrato Social (URL do PDF)</Label>
+            <Input
+              id="contrato_social_url"
+              value={formData.contrato_social_url || ""}
+              onChange={(e) => handleChange("contrato_social_url", e.target.value)}
+              placeholder="URL do arquivo PDF do contrato social"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="documentos_socios_url">Documentos dos Sócios (URL do PDF/ZIP)</Label>
+            <Input
+              id="documentos_socios_url"
+              value={formData.documentos_socios_url || ""}
+              onChange={(e) => handleChange("documentos_socios_url", e.target.value)}
+              placeholder="URL dos documentos RG/CPF dos sócios"
+            />
+          </div>
+
+          <div className="space-y-2">
             <Label htmlFor="observacoes">Observações</Label>
             <Textarea
               id="observacoes"
