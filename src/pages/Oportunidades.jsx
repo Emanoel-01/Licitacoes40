@@ -36,6 +36,7 @@ export default function Oportunidades() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [viewMode, setViewMode] = useState("grid");
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [formData, setFormData] = useState({
     numero_edital: "",
     orgao_licitante: "",
@@ -81,15 +82,82 @@ export default function Oportunidades() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     let edital_pdf_url = null;
+    let aiAnalysisData = {};
 
     if (formData.edital_pdf_file) {
       try {
         const { file_url } = await base44.integrations.Core.UploadFile({ file: formData.edital_pdf_file });
         edital_pdf_url = file_url;
+        
+        // Análise automática com IA
+        setIsAnalyzing(true);
+        toast.info("IA analisando o edital...");
+        
+        const result = await base44.integrations.Core.InvokeLLM({
+          prompt: `Você é um especialista em licitações e análise de editais. Analise este edital e extraia as seguintes informações estruturadas:
+
+Contexto atual:
+- OBJETO: ${formData.objeto}
+- ÓRGÃO: ${formData.orgao_licitante}
+- MODALIDADE: ${formData.modalidade}
+
+Extraia e forneça em JSON:
+1. numero_edital: Número exato do edital
+2. data_abertura: Data e hora da abertura (ISO format)
+3. data_limite_proposta: Prazo limite para propostas (ISO format)
+4. valor_estimado: Valor estimado (número)
+5. score_compatibilidade: Score de 0-100
+6. checklist_tarefas: Array com tarefas necessárias para montar a proposta
+
+Seja preciso e objetivo.`,
+          response_json_schema: {
+            type: "object",
+            properties: {
+              numero_edital: { type: "string" },
+              data_abertura: { type: "string" },
+              data_limite_proposta: { type: "string" },
+              valor_estimado: { type: "number" },
+              score_compatibilidade: { type: "number" },
+              checklist_tarefas: { 
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    categoria: { type: "string" },
+                    tarefa: { type: "string" },
+                    obrigatorio: { type: "boolean" }
+                  }
+                }
+              }
+            }
+          },
+          file_urls: [edital_pdf_url]
+        });
+
+        // Formatar checklist
+        const checklistFormatado = result.checklist_tarefas?.map((item, idx) => ({
+          id: `task-${idx}`,
+          categoria: item.categoria,
+          tarefa: item.tarefa,
+          obrigatorio: item.obrigatorio ?? true,
+          concluido: false
+        })) || [];
+
+        aiAnalysisData = {
+          numero_edital: result.numero_edital,
+          data_abertura: result.data_abertura,
+          data_limite_proposta: result.data_limite_proposta,
+          valor_estimado: result.valor_estimado,
+          score_compatibilidade: result.score_compatibilidade,
+          checklist_proposta: checklistFormatado
+        };
+
+        toast.success("Edital analisado com sucesso!");
       } catch (error) {
-        console.error("Erro ao enviar PDF:", error);
-        toast.error("Erro ao enviar PDF do edital.");
-        return;
+        console.error("Erro ao analisar PDF:", error);
+        toast.error("Erro ao analisar edital. Continuando com dados manuais.");
+      } finally {
+        setIsAnalyzing(false);
       }
     }
 
@@ -97,7 +165,8 @@ export default function Oportunidades() {
       ...formData,
       edital_pdf_file: undefined,
       valor_estimado: formData.valor_estimado ? parseFloat(formData.valor_estimado) : null,
-      ...(edital_pdf_url && { edital_pdf_url })
+      ...(edital_pdf_url && { edital_pdf_url }),
+      ...aiAnalysisData
     });
   };
 
@@ -402,11 +471,11 @@ export default function Oportunidades() {
               </div>
 
               <div className="flex justify-end gap-3 pt-4">
-                <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
+                <Button type="button" variant="outline" onClick={() => setShowForm(false)} disabled={isAnalyzing}>
                   Cancelar
                 </Button>
-                <Button type="submit" className="bg-slate-900 hover:bg-slate-800">
-                  Cadastrar Oportunidade
+                <Button type="submit" className="bg-slate-900 hover:bg-slate-800" disabled={isAnalyzing || createMutation.isPending}>
+                  {isAnalyzing ? "Analisando com IA..." : createMutation.isPending ? "Salvando..." : "Cadastrar Oportunidade"}
                 </Button>
               </div>
             </form>
