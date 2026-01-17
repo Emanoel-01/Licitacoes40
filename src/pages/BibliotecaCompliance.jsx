@@ -657,9 +657,9 @@ export default function BibliotecaCompliance() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="space-y-2">
-                  <Label>Categoria *</Label>
+                  <Label className="text-sm">Categoria *</Label>
                   <Select 
                     value={formData.categoria} 
                     onValueChange={(v) => setFormData(f => ({ ...f, categoria: v }))}
@@ -677,7 +677,7 @@ export default function BibliotecaCompliance() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Empresa (opcional)</Label>
+                  <Label className="text-sm">Empresa (opcional)</Label>
                   <Select 
                     value={formData.empresa_id || "global"} 
                     onValueChange={(v) => setFormData(f => ({ ...f, empresa_id: v === "global" ? "" : v }))}
@@ -731,9 +731,9 @@ export default function BibliotecaCompliance() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="space-y-2">
-                  <Label>Data de Emissão</Label>
+                  <Label className="text-sm">Data de Emissão</Label>
                   <Input
                     type="date"
                     value={formData.data_emissao}
@@ -742,7 +742,7 @@ export default function BibliotecaCompliance() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Data de Validade</Label>
+                  <Label className="text-sm">Data de Validade</Label>
                   <Input
                     type="date"
                     value={formData.data_validade}
