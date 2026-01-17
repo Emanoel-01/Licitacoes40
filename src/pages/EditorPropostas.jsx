@@ -395,6 +395,7 @@ export default function EditorPropostas() {
         open={showModalAnexo}
         onClose={() => setShowModalAnexo(false)}
         onSelect={addBlocoAnexo}
+        empresaId={oportunidade?.empresa_id}
       />
     </div>
   );

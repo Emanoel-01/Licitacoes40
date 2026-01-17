@@ -1,11 +1,35 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Trash2, GripVertical, ChevronDown } from "lucide-react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
+const VARIAVEIS = [
+  { id: "cliente", label: "Cliente", icon: "🏢" },
+  { id: "objeto", label: "Objeto", icon: "🏗️" },
+  { id: "data", label: "Data", icon: "📅" },
+  { id: "empresa", label: "Empresa", icon: "🏭" },
+  { id: "valor", label: "Valor", icon: "💰" },
+];
+
 export default function BlocoTexto({ bloco, onUpdate, onDelete, isDragging }) {
   const [isExpanded, setIsExpanded] = useState(true);
+  const quillRef = useRef(null);
+
+  const insertVariable = (varId) => {
+    const varText = `{{${varId.toUpperCase()}}}`;
+    if (quillRef.current) {
+      const editor = quillRef.current.getEditor();
+      const selection = editor.getSelection();
+      if (selection) {
+        editor.insertText(selection.index, varText);
+      } else {
+        editor.insertText(editor.getLength(), varText);
+      }
+      editor.setSelection(editor.getLength());
+    }
+  };
 
   return (
     <div className={`border rounded-lg bg-white transition-all ${isDragging ? "opacity-50" : ""}`}>
@@ -35,15 +59,37 @@ export default function BlocoTexto({ bloco, onUpdate, onDelete, isDragging }) {
       </div>
 
       {isExpanded && (
-        <div className="p-4">
+        <div className="p-4 space-y-3">
           <input
             type="text"
             placeholder="Título do bloco"
             value={bloco.titulo_bloco || ""}
             onChange={(e) => onUpdate({ ...bloco, titulo_bloco: e.target.value })}
-            className="w-full mb-4 px-3 py-2 border rounded text-sm"
+            className="w-full px-3 py-2 border rounded text-sm"
           />
+          
+          {/* Barra de Variáveis */}
+          <div className="flex flex-wrap gap-2 p-3 bg-slate-50 rounded border border-slate-200">
+            <span className="text-xs font-medium text-slate-600 self-center whitespace-nowrap">
+              Inserir:
+            </span>
+            {VARIAVEIS.map((v) => (
+              <button
+                key={v.id}
+                onClick={() => insertVariable(v.id)}
+                type="button"
+                className="hover:opacity-80 transition-opacity"
+              >
+                <Badge variant="outline" className="cursor-pointer gap-1">
+                  <span>{v.icon}</span>
+                  <span className="hidden sm:inline">{v.label}</span>
+                </Badge>
+              </button>
+            ))}
+          </div>
+
           <ReactQuill
+            ref={quillRef}
             value={bloco.conteudo_html || ""}
             onChange={(html) => onUpdate({ ...bloco, conteudo_html: html })}
             theme="snow"
