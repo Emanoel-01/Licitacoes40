@@ -305,7 +305,7 @@ export default function BibliotecaCompliance() {
         {/* Filtros */}
         <Card className="glass-panel mb-6">
           <CardContent className="p-4">
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4 items-end">
               <div className="flex-1 min-w-[200px]">
                 <Label className="text-sm text-muted-foreground mb-2">Categoria</Label>
                 <Select value={filterCategoria} onValueChange={setFilterCategoria}>
