@@ -9,6 +9,7 @@ import OportunidadeDetalhe from './pages/OportunidadeDetalhe';
 import Oportunidades from './pages/Oportunidades';
 import Profissionais from './pages/Profissionais';
 import Home from './pages/Home';
+import Perfil from './pages/Perfil';
 import __Layout from './Layout.jsx';
 
 
@@ -24,6 +25,7 @@ export const PAGES = {
     "Oportunidades": Oportunidades,
     "Profissionais": Profissionais,
     "Home": Home,
+    "Perfil": Perfil,
 }
 
 export const pagesConfig = {

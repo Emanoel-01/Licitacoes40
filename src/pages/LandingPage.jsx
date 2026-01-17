@@ -42,27 +42,27 @@ export default function LandingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-900" />
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Header */}
-      <header className="border-b border-slate-700 bg-slate-900/50 backdrop-blur-sm sticky top-0 z-50">
+    <div className="min-h-screen bg-background">
+      {/* Header - Titanium Construct */}
+      <header className="glass-panel sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-              <Target className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 rounded bg-gradient-to-br from-primary to-amber-600 flex items-center justify-center shadow-lg shadow-primary/20">
+              <Target className="w-6 h-6 text-slate-950" />
             </div>
             <div>
-              <h1 className="font-bold text-white text-lg">Licitações 4.0</h1>
-              <p className="text-xs text-slate-400">Inteligência em Licitações</p>
+              <h1 className="font-bold text-foreground text-lg tracking-tight">Licitações 4.0</h1>
+              <p className="text-xs text-muted-foreground font-mono">Engenharia de Precisão</p>
             </div>
           </div>
-          <Button onClick={handleLogin} variant="outline" className="border-slate-600 text-white hover:bg-slate-800">
+          <Button onClick={handleLogin} className="bg-primary text-primary-foreground hover:bg-primary/90">
             Acessar Sistema
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
@@ -72,19 +72,19 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="py-20 px-6">
         <div className="max-w-7xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full mb-6">
-            <Sparkles className="w-4 h-4 text-blue-400" />
-            <span className="text-sm text-blue-300 font-medium">Powered by AI</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 tech-border rounded-full mb-6">
+            <Sparkles className="w-4 h-4 text-primary" />
+            <span className="text-sm text-primary font-medium font-mono">POWERED BY AI</span>
           </div>
           
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
+          <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
             Nunca mais perca uma<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-amber-600">
               licitação por documentação
             </span>
           </h1>
           
-          <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
             Sistema inteligente que monitora, audita e organiza toda documentação técnica 
             da sua empresa para garantir 100% de conformidade nos editais.
           </p>
@@ -93,7 +93,7 @@ export default function LandingPage() {
             <Button 
               onClick={handleLogin}
               size="lg"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-lg"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-lg shadow-lg shadow-primary/20"
             >
               Começar Agora
               <ArrowRight className="w-5 h-5 ml-2" />
@@ -101,7 +101,7 @@ export default function LandingPage() {
             <Button 
               size="lg"
               variant="outline"
-              className="border-slate-600 text-white hover:bg-slate-800 px-8 py-6 text-lg"
+              className="tech-border px-8 py-6 text-lg"
             >
               Ver Demonstração
             </Button>
@@ -110,51 +110,51 @@ export default function LandingPage() {
       </section>
 
       {/* Features */}
-      <section className="py-20 px-6 bg-slate-800/50">
+      <section className="py-20 px-6 bg-slate-900/50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               Como Funciona
             </h2>
-            <p className="text-slate-300 text-lg">
+            <p className="text-muted-foreground text-lg">
               Três pilares para sua empresa nunca mais ser desclassificada
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="bg-slate-800 border-slate-700 hover:border-blue-500/50 transition-all">
+            <Card className="glass-panel hover:border-primary/50 transition-all">
               <CardContent className="pt-6">
-                <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-4">
-                  <Shield className="w-6 h-6 text-blue-400" />
+                <div className="w-12 h-12 rounded bg-primary/10 flex items-center justify-center mb-4">
+                  <Shield className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">Auditoria Automática</h3>
-                <p className="text-slate-400">
+                <h3 className="text-xl font-bold text-foreground mb-2">Auditoria Automática</h3>
+                <p className="text-muted-foreground">
                   IA analisa 100% dos requisitos do edital e cruza com seu acervo técnico, 
                   certificações e certidões em tempo real.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800 border-slate-700 hover:border-blue-500/50 transition-all">
+            <Card className="glass-panel hover:border-primary/50 transition-all">
               <CardContent className="pt-6">
-                <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-4">
+                <div className="w-12 h-12 rounded bg-green-500/10 flex items-center justify-center mb-4">
                   <FileCheck className="w-6 h-6 text-green-400" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">Gestão de Documentos</h3>
-                <p className="text-slate-400">
+                <h3 className="text-xl font-bold text-foreground mb-2">Gestão de Documentos</h3>
+                <p className="text-muted-foreground">
                   Centralize CATs, ARTs, certidões e toda documentação técnica. 
                   Alertas automáticos de vencimento.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800 border-slate-700 hover:border-blue-500/50 transition-all">
+            <Card className="glass-panel hover:border-primary/50 transition-all">
               <CardContent className="pt-6">
-                <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4">
-                  <Zap className="w-6 h-6 text-purple-400" />
+                <div className="w-12 h-12 rounded bg-ring/10 flex items-center justify-center mb-4">
+                  <Zap className="w-6 h-6 text-ring" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">Busca Inteligente</h3>
-                <p className="text-slate-400">
+                <h3 className="text-xl font-bold text-foreground mb-2">Busca Inteligente</h3>
+                <p className="text-muted-foreground">
                   Robô monitora portais de licitação 24/7 e filtra apenas oportunidades 
                   compatíveis com seu acervo.
                 </p>
@@ -169,41 +169,41 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
                 Resultados Comprovados
               </h2>
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded bg-green-500/10 flex items-center justify-center flex-shrink-0">
                     <CheckCircle className="w-5 h-5 text-green-400" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-white mb-1">Zero Desclassificações</h3>
-                    <p className="text-slate-400">
+                    <h3 className="text-lg font-semibold text-foreground mb-1">Zero Desclassificações</h3>
+                    <p className="text-muted-foreground">
                       Auditoria prévia garante conformidade documental em 100% das propostas
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                    <TrendingUp className="w-5 h-5 text-blue-400" />
+                  <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <TrendingUp className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-white mb-1">+60% Produtividade</h3>
-                    <p className="text-slate-400">
+                    <h3 className="text-lg font-semibold text-foreground mb-1">+60% Produtividade</h3>
+                    <p className="text-muted-foreground">
                       Equipe foca em propostas técnicas enquanto o sistema cuida da documentação
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center flex-shrink-0">
-                    <Users className="w-5 h-5 text-purple-400" />
+                  <div className="w-10 h-10 rounded bg-ring/10 flex items-center justify-center flex-shrink-0">
+                    <Users className="w-5 h-5 text-ring" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-white mb-1">Gestão Centralizada</h3>
-                    <p className="text-slate-400">
+                    <h3 className="text-lg font-semibold text-foreground mb-1">Gestão Centralizada</h3>
+                    <p className="text-muted-foreground">
                       Toda equipe técnica, certidões e acervo em uma única plataforma
                     </p>
                   </div>
@@ -213,7 +213,7 @@ export default function LandingPage() {
               <Button 
                 onClick={handleLogin}
                 size="lg"
-                className="bg-blue-600 hover:bg-blue-700 text-white mt-8 px-8 py-6 text-lg"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 mt-8 px-8 py-6 text-lg shadow-lg shadow-primary/20"
               >
                 Começar Gratuitamente
                 <ArrowRight className="w-5 h-5 ml-2" />
@@ -221,46 +221,46 @@ export default function LandingPage() {
             </div>
 
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl blur-3xl opacity-20" />
-              <Card className="relative bg-slate-800 border-slate-700 p-8">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary to-amber-600 rounded-2xl blur-3xl opacity-20" />
+              <Card className="relative glass-panel p-8">
                 <div className="space-y-6">
-                  <div className="flex items-center justify-between p-4 bg-slate-900 rounded-lg">
+                  <div className="flex items-center justify-between p-4 bg-background/50 rounded tech-border">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded bg-green-500/10 flex items-center justify-center">
                         <FileCheck className="w-5 h-5 text-green-400" />
                       </div>
                       <div>
-                        <p className="text-sm text-slate-400">Certidões Válidas</p>
-                        <p className="text-lg font-bold text-white">12/12</p>
+                        <p className="text-sm text-muted-foreground">Certidões Válidas</p>
+                        <p className="text-lg font-bold text-foreground font-mono">12/12</p>
                       </div>
                     </div>
                     <CheckCircle className="w-6 h-6 text-green-400" />
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-slate-900 rounded-lg">
+                  <div className="flex items-center justify-between p-4 bg-background/50 rounded tech-border">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                        <Target className="w-5 h-5 text-blue-400" />
+                      <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center">
+                        <Target className="w-5 h-5 text-primary" />
                       </div>
                       <div>
-                        <p className="text-sm text-slate-400">Editais Monitorados</p>
-                        <p className="text-lg font-bold text-white">47 ativos</p>
+                        <p className="text-sm text-muted-foreground">Editais Monitorados</p>
+                        <p className="text-lg font-bold text-foreground font-mono">47 ativos</p>
                       </div>
                     </div>
-                    <Zap className="w-6 h-6 text-blue-400" />
+                    <Zap className="w-6 h-6 text-primary" />
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-slate-900 rounded-lg">
+                  <div className="flex items-center justify-between p-4 bg-background/50 rounded tech-border">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                        <Users className="w-5 h-5 text-purple-400" />
+                      <div className="w-10 h-10 rounded bg-ring/10 flex items-center justify-center">
+                        <Users className="w-5 h-5 text-ring" />
                       </div>
                       <div>
-                        <p className="text-sm text-slate-400">Profissionais Ativos</p>
-                        <p className="text-lg font-bold text-white">8 RT</p>
+                        <p className="text-sm text-muted-foreground">Profissionais Ativos</p>
+                        <p className="text-lg font-bold text-foreground font-mono">8 RT</p>
                       </div>
                     </div>
-                    <TrendingUp className="w-6 h-6 text-purple-400" />
+                    <TrendingUp className="w-6 h-6 text-ring" />
                   </div>
                 </div>
               </Card>
@@ -270,18 +270,18 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Final */}
-      <section className="py-20 px-6 bg-gradient-to-r from-blue-600 to-blue-700">
+      <section className="py-20 px-6 bg-gradient-to-r from-primary to-amber-600">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-950 mb-4">
             Pronto para vencer mais licitações?
           </h2>
-          <p className="text-xl text-blue-100 mb-8">
+          <p className="text-xl text-slate-900 mb-8">
             Junte-se às empresas que já eliminaram desclassificações por documentação
           </p>
           <Button 
             onClick={handleLogin}
             size="lg"
-            className="bg-white text-blue-600 hover:bg-slate-100 px-8 py-6 text-lg"
+            className="bg-slate-950 text-white hover:bg-slate-900 px-8 py-6 text-lg shadow-2xl"
           >
             Começar Agora - É Grátis
             <ArrowRight className="w-5 h-5 ml-2" />
@@ -290,9 +290,9 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 border-t border-slate-800 py-8 px-6">
+      <footer className="glass-panel py-8 px-6">
         <div className="max-w-7xl mx-auto text-center">
-          <p className="text-slate-400">
+          <p className="text-muted-foreground font-mono text-sm">
             © 2026 Licitações 4.0 - Inteligência Artificial aplicada a Licitações Públicas
           </p>
         </div>

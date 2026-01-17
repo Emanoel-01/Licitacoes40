@@ -11,7 +11,7 @@ import {
   X,
   ChevronRight,
   LogOut,
-  Settings
+  UserCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -93,7 +93,20 @@ export default function Layout({ children, currentPageName }) {
           </nav>
 
           {/* Footer */}
-          <div className="p-4 border-t border-slate-700/50">
+          <div className="p-4 border-t border-slate-700/50 space-y-1">
+            <Link
+              to="/Perfil"
+              onClick={() => setSidebarOpen(false)}
+              className={cn(
+                "flex items-center gap-3 px-4 py-3 rounded transition-all duration-200 tech-border",
+                currentPageName === "/Perfil"
+                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 border-primary/50" 
+                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground border-transparent"
+              )}
+            >
+              <UserCircle className="w-5 h-5" />
+              <span className="font-medium tracking-wide">Meu Perfil</span>
+            </Link>
             <Button 
               variant="ghost" 
               className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 border border-transparent hover:border-destructive/20"
