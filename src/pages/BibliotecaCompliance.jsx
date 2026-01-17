@@ -74,15 +74,7 @@ export default function BibliotecaCompliance() {
 
   const { data: documentos = [], isLoading } = useQuery({
     queryKey: ['biblioteca-compliance'],
-    queryFn: async () => {
-      const docs = await base44.entities.BibliotecaCompliance.list();
-      return docs.sort((a, b) => {
-        const statusA = getStatus(a.data_validade).label;
-        const statusB = getStatus(b.data_validade).label;
-        const priority = { "Vencido": 0, "Vence em": 1, "Vigente": 2, "Sem Validade": 3 };
-        return (priority[statusA] || 4) - (priority[statusB] || 4);
-      });
-    }
+    queryFn: () => base44.entities.BibliotecaCompliance.list()
   });
 
   const { data: empresas = [] } = useQuery({
@@ -207,8 +199,15 @@ export default function BibliotecaCompliance() {
     "Técnica/Institucional": "bg-orange-100 text-orange-700 border-orange-300"
   };
 
-  // Filtrar documentos
-  const filteredDocs = documentos.filter(doc => {
+  // Ordenar e filtrar documentos
+  const sortedDocs = Array.isArray(documentos) ? [...documentos].sort((a, b) => {
+    const statusA = getStatus(a.data_validade).label;
+    const statusB = getStatus(b.data_validade).label;
+    const priority = { "Vencido": 0, "Vence em": 1, "Vigente": 2, "Sem Validade": 3 };
+    return (priority[statusA] || 4) - (priority[statusB] || 4);
+  }) : [];
+
+  const filteredDocs = sortedDocs.filter(doc => {
     if (filterCategoria !== "all" && doc.categoria !== filterCategoria) return false;
     
     if (filterStatus !== "all") {
