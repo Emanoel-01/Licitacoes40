@@ -180,13 +180,13 @@ export default function EditorPropostas() {
   const gerarPDF = useMutation({
     mutationFn: async () => {
       setIsGeneratingPDF(true);
-      const response = await base44.functions.invoke("gerarPDFProposta", {
-        proposta_id: propostaId,
+      const response = await base44.functions.invoke("gerarPDFPropostaV2", {
+        propostaId,
       });
       return response.data;
     },
     onSuccess: (data) => {
-      toast.success("PDF gerado com sucesso!");
+      toast.success(`PDF gerado com ${data.pageCount} páginas!`);
       queryClient.invalidateQueries({ queryKey: ["proposta", propostaId] });
     },
     onError: (error) => {
@@ -350,8 +350,8 @@ export default function EditorPropostas() {
           </CardContent>
         </Card>
 
-        {/* Ações */}
-        <div className="flex gap-3 justify-end">
+        {/* Ações - Flutuante no Mobile */}
+        <div className="flex gap-3 justify-end fixed bottom-0 left-0 right-0 p-4 bg-white border-t shadow-lg lg:static lg:border-0 lg:shadow-none lg:bg-transparent lg:p-0">
           <Button
             onClick={() => saveProposta.mutate()}
             disabled={saveProposta.isPending}

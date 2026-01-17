@@ -74,7 +74,15 @@ export default function BibliotecaCompliance() {
 
   const { data: documentos = [], isLoading } = useQuery({
     queryKey: ['biblioteca-compliance'],
-    queryFn: () => base44.entities.BibliotecaCompliance.list()
+    queryFn: async () => {
+      const docs = await base44.entities.BibliotecaCompliance.list();
+      return docs.sort((a, b) => {
+        const statusA = getStatus(a.data_validade).label;
+        const statusB = getStatus(b.data_validade).label;
+        const priority = { "Vencido": 0, "Vence em": 1, "Vigente": 2, "Sem Validade": 3 };
+        return (priority[statusA] || 4) - (priority[statusB] || 4);
+      });
+    }
   });
 
   const { data: empresas = [] } = useQuery({
@@ -328,6 +336,14 @@ export default function BibliotecaCompliance() {
                   </SelectContent>
                 </Select>
               </div>
+
+              <Button 
+                variant="outline" 
+                onClick={() => { setFilterCategoria("all"); setFilterStatus("all"); }}
+                className="self-end"
+              >
+                Limpar Filtros
+              </Button>
             </div>
           </CardContent>
         </Card>
