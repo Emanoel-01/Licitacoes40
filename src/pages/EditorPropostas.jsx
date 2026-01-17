@@ -62,9 +62,11 @@ export default function EditorPropostas() {
     queryFn: async () => {
       const docs = await base44.entities.BibliotecaCompliance.list();
       const map = {};
-      docs.forEach((doc) => {
-        map[doc.id] = doc;
-      });
+      if (Array.isArray(docs)) {
+        docs.forEach((doc) => {
+          map[doc.id] = doc;
+        });
+      }
       return map;
     },
   });

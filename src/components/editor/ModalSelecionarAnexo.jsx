@@ -17,11 +17,14 @@ export default function ModalSelecionarAnexo({ open, onClose, onSelect }) {
 
   const { data: documentos = [] } = useQuery({
     queryKey: ["biblioteca-compliance"],
-    queryFn: () => base44.entities.BibliotecaCompliance.list("-updated_date"),
+    queryFn: async () => {
+      const docs = await base44.entities.BibliotecaCompliance.list("-updated_date");
+      return Array.isArray(docs) ? docs : [];
+    },
     enabled: open,
   });
 
-  const filtered = documentos.filter(
+  const filtered = (Array.isArray(documentos) ? documentos : []).filter(
     (doc) =>
       doc.nome_documento?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       doc.categoria?.toLowerCase().includes(searchTerm.toLowerCase())
