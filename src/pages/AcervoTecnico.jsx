@@ -135,22 +135,22 @@ export default function AcervoTecnico() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground tracking-tight flex items-center gap-3">
-              <Briefcase className="h-8 w-8 text-primary" />
-              Biblioteca de Acervo Técnico
+          <div className="min-w-0 flex-1">
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight flex items-center gap-2 sm:gap-3">
+              <Briefcase className="w-7 h-7 sm:w-8 sm:h-8 text-primary flex-shrink-0" />
+              <span className="truncate">Biblioteca de Acervo Técnico</span>
             </h1>
-            <p className="text-muted-foreground mt-2">
+            <p className="text-muted-foreground mt-2 text-sm sm:text-base">
               Centralize todos os CATs, Atestados e RRTs da equipe
             </p>
           </div>
           <Button 
             onClick={() => setShowForm(true)}
-            className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 w-full sm:w-auto"
+            className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 w-full sm:w-auto flex-shrink-0"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 flex-shrink-0" />
             <span className="hidden sm:inline">Novo Documento</span>
             <span className="sm:hidden">Novo</span>
           </Button>
@@ -158,11 +158,11 @@ export default function AcervoTecnico() {
 
         {/* Filtro por Profissional */}
         <Card className="mb-6 glass-panel tech-border">
-          <CardContent className="pt-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <Label className="sm:min-w-[150px]">Filtrar por Profissional:</Label>
+          <CardContent className="pt-4 sm:pt-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+              <Label className="sm:min-w-[150px] text-sm sm:text-base">Filtrar por Profissional:</Label>
               <Select value={selectedProfissional} onValueChange={setSelectedProfissional}>
-                <SelectTrigger className="w-full sm:max-w-md">
+                <SelectTrigger className="w-full sm:max-w-md text-sm">
                   <SelectValue placeholder="Todos os profissionais" />
                 </SelectTrigger>
                 <SelectContent>
@@ -175,7 +175,7 @@ export default function AcervoTecnico() {
                 </SelectContent>
               </Select>
               {selectedProfissional && (
-                <Button variant="outline" size="sm" onClick={() => setSelectedProfissional("")}>
+                <Button variant="outline" size="sm" onClick={() => setSelectedProfissional("")} className="w-full sm:w-auto">
                   Limpar Filtro
                 </Button>
               )}
@@ -185,10 +185,10 @@ export default function AcervoTecnico() {
 
         {/* Grid de Acervos */}
         {loadingAcervos ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {[1, 2, 3].map((i) => (
               <Card key={i} className="animate-pulse">
-                <CardContent className="p-6">
+                <CardContent className="p-4 sm:p-6">
                   <div className="h-20 bg-slate-200 rounded mb-4" />
                   <div className="h-4 bg-slate-200 rounded w-2/3 mb-2" />
                   <div className="h-4 bg-slate-200 rounded w-1/2" />
@@ -198,22 +198,22 @@ export default function AcervoTecnico() {
           </div>
         ) : filteredAcervos.length === 0 ? (
           <Card className="border-dashed border-2 border-slate-300">
-            <CardContent className="py-16 text-center">
-              <Briefcase className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-slate-700 mb-2">
+            <CardContent className="py-12 sm:py-16 text-center px-4">
+              <Briefcase className="w-12 sm:w-16 h-12 sm:h-16 text-slate-300 mx-auto mb-4" />
+              <h3 className="text-lg sm:text-xl font-semibold text-slate-700 mb-2">
                 {selectedProfissional ? "Nenhum acervo encontrado" : "Nenhum acervo cadastrado"}
               </h3>
-              <p className="text-slate-500 mb-6">
+              <p className="text-slate-500 mb-6 text-sm sm:text-base">
                 {selectedProfissional ? "Este profissional ainda não possui documentos" : "Comece adicionando o primeiro documento técnico"}
               </p>
-              <Button onClick={() => setShowForm(true)} className="gap-2">
+              <Button onClick={() => setShowForm(true)} className="gap-2 w-full sm:w-auto">
                 <Plus className="w-4 h-4" />
                 Adicionar Documento
               </Button>
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {filteredAcervos.map((acervo) => (
               <Card key={acervo.id} className="group hover:shadow-xl transition-all glass-panel tech-border hover:border-primary/50">
                 <CardHeader className="border-b border-slate-100">
@@ -284,19 +284,19 @@ export default function AcervoTecnico() {
 
         {/* Modal de Criação */}
         <Dialog open={showForm} onOpenChange={setShowForm}>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto w-full mx-4 sm:mx-0">
             <DialogHeader>
-              <DialogTitle>Novo Documento Técnico</DialogTitle>
+              <DialogTitle className="text-lg sm:text-xl">Novo Documento Técnico</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label>Profissional *</Label>
+                <Label className="text-sm sm:text-base">Profissional *</Label>
                 <Select 
                   value={formData.profissional_id} 
                   onValueChange={(val) => setFormData(prev => ({...prev, profissional_id: val}))}
                   required
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="text-sm">
                     <SelectValue placeholder="Selecione o profissional" />
                   </SelectTrigger>
                   <SelectContent>
@@ -310,12 +310,12 @@ export default function AcervoTecnico() {
               </div>
 
               <div className="space-y-2">
-                <Label>Tipo de Documento *</Label>
+                <Label className="text-sm sm:text-base">Tipo de Documento *</Label>
                 <Select 
                   value={formData.tipo_documento} 
                   onValueChange={(val) => setFormData(prev => ({...prev, tipo_documento: val}))}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="text-sm">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -329,71 +329,77 @@ export default function AcervoTecnico() {
               </div>
 
               <div className="space-y-2">
-                <Label>Título da Obra/Serviço *</Label>
+                <Label className="text-sm sm:text-base">Título da Obra/Serviço *</Label>
                 <Input
                   value={formData.titulo}
                   onChange={(e) => setFormData(prev => ({...prev, titulo: e.target.value}))}
                   placeholder="Ex: Reforma do Hospital Municipal"
                   required
+                  className="text-sm"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label>Descrição</Label>
+                <Label className="text-sm sm:text-base">Descrição</Label>
                 <Textarea
                   value={formData.descricao}
                   onChange={(e) => setFormData(prev => ({...prev, descricao: e.target.value}))}
                   placeholder="Descrição detalhada da obra/serviço executado"
                   rows={3}
+                  className="text-sm"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="space-y-2">
-                  <Label>Data de Execução</Label>
+                  <Label className="text-sm sm:text-base">Data de Execução</Label>
                   <Input
                     type="date"
                     value={formData.data_execucao}
                     onChange={(e) => setFormData(prev => ({...prev, data_execucao: e.target.value}))}
+                    className="text-sm"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Valor da Obra (R$)</Label>
+                  <Label className="text-sm sm:text-base">Valor da Obra (R$)</Label>
                   <Input
                     type="number"
                     value={formData.valor_obra}
                     onChange={(e) => setFormData(prev => ({...prev, valor_obra: e.target.value}))}
                     placeholder="0.00"
+                    className="text-sm"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label>Órgão/Empresa Contratante</Label>
+                <Label className="text-sm sm:text-base">Órgão/Empresa Contratante</Label>
                 <Input
                   value={formData.orgao_contratante}
                   onChange={(e) => setFormData(prev => ({...prev, orgao_contratante: e.target.value}))}
                   placeholder="Ex: Prefeitura de Recife"
+                  className="text-sm"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label>Arquivos PDF do Documento (múltiplos)</Label>
+                <Label className="text-sm sm:text-base">Arquivos PDF do Documento (múltiplos)</Label>
                 <Input
                   type="file"
                   accept=".pdf"
                   multiple
                   onChange={handleFileUpload}
                   disabled={uploading}
+                  className="text-sm"
                 />
-                {uploading && <p className="text-sm text-slate-500">Enviando arquivos...</p>}
+                {uploading && <p className="text-xs sm:text-sm text-slate-500">Enviando arquivos...</p>}
                 {formData.arquivo_cat_urls && formData.arquivo_cat_urls.length > 0 && (
                   <div className="space-y-2 mt-2">
                     {formData.arquivo_cat_urls.map((url, index) => (
-                      <div key={index} className="flex items-center gap-2 p-2 border border-slate-200 rounded-lg">
-                        <FileText className="w-4 h-4 text-slate-500" />
-                        <a href={url} target="_blank" rel="noreferrer" className="flex-1 text-sm text-blue-600 hover:underline truncate">
+                      <div key={index} className="flex items-center gap-2 p-2 border border-slate-200 rounded-lg text-xs sm:text-sm">
+                        <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-500 flex-shrink-0" />
+                        <a href={url} target="_blank" rel="noreferrer" className="flex-1 text-blue-600 hover:underline truncate">
                           Documento {index + 1}
                         </a>
                         <Button
@@ -401,7 +407,7 @@ export default function AcervoTecnico() {
                           variant="ghost"
                           size="icon"
                           onClick={() => removeFile(index)}
-                          className="h-6 w-6"
+                          className="h-6 w-6 flex-shrink-0"
                         >
                           <Trash2 className="w-3 h-3 text-red-500" />
                         </Button>
@@ -411,11 +417,11 @@ export default function AcervoTecnico() {
                 )}
               </div>
 
-              <div className="flex gap-3 pt-4">
-                <Button type="button" variant="outline" onClick={() => setShowForm(false)} className="flex-1">
+              <div className="flex gap-2 sm:gap-3 pt-4">
+                <Button type="button" variant="outline" onClick={() => setShowForm(false)} className="flex-1 text-sm">
                   Cancelar
                 </Button>
-                <Button type="submit" disabled={createMutation.isPending} className="flex-1">
+                <Button type="submit" disabled={createMutation.isPending} className="flex-1 text-sm">
                   {createMutation.isPending ? "Salvando..." : "Salvar Documento"}
                 </Button>
               </div>
