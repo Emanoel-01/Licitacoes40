@@ -23,6 +23,7 @@ export default function EditorPropostas() {
   const [blocos, setBlocos] = useState([]);
   const [showModalAnexo, setShowModalAnexo] = useState(false);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const tipoProposta = urlParams.get("tipo") || "tecnica";
 
   // Fetch oportunidade
   const { data: oportunidade } = useQuery({
@@ -68,10 +69,55 @@ export default function EditorPropostas() {
     },
   });
 
-  // Inicializar dados
+  // Títulos padrão por tipo
+  const getTituloDefault = () => {
+    const tipos = {
+      habilitacao: "Documentos de Habilitação Técnica",
+      tecnica: "Proposta Técnica",
+      preco: "Proposta de Preço"
+    };
+    return tipos[tipoProposta] || tipos.tecnica;
+  };
+
+  // Pré-carregar blocos baseado no tipo de proposta
+  useEffect(() => {
+    if (!propostaExistente && blocos.length === 0 && oportunidade) {
+      // Sugerir blocos iniciais baseado no checklist da oportunidade
+      const blocosIniciais = [];
+      
+      if (tipoProposta === "habilitacao" && oportunidade.checklist_proposta) {
+        // Para habilitação, sugerir um bloco introdutório
+        blocosIniciais.push({
+          tipo_bloco: "Texto",
+          conteudo_html: "<h2>Documentos de Habilitação Técnica</h2><p>{{CLIENTE}}</p>",
+          titulo_bloco: "Introdução - Habilitação",
+        });
+      } else if (tipoProposta === "tecnica" && oportunidade.checklist_proposta) {
+        blocosIniciais.push({
+          tipo_bloco: "Texto",
+          conteudo_html: "<h2>Proposta Técnica</h2><p>Órgão: {{CLIENTE}}</p><p>Objeto: {{OBJETO}}</p>",
+          titulo_bloco: "Capa - Proposta Técnica",
+        });
+      } else if (tipoProposta === "preco") {
+        blocosIniciais.push({
+          tipo_bloco: "Texto",
+          conteudo_html: "<h2>Proposta de Preço</h2><p>{{CLIENTE}}</p><p>Data: {{DATA}}</p>",
+          titulo_bloco: "Capa - Proposta de Preço",
+        });
+      }
+      
+      if (blocosIniciais.length > 0) {
+        setBlocos(blocosIniciais);
+      }
+    }
+  }, [oportunidade, tipoProposta, propostaExistente, blocos.length]);
+
+  // Inicializar dados existentes
   useEffect(() => {
     if (propostaExistente) {
       setTitulo(propostaExistente.titulo);
+    } else if (!titulo) {
+      setTitulo(getTituloDefault());
     }
     if (itens.length > 0) {
       setBlocos(itens);
@@ -87,6 +133,7 @@ export default function EditorPropostas() {
         const novaPropostadoc = await base44.entities.PropostasDoc.create({
           oportunidade_id: oportunidadeId,
           titulo: titulo || "Proposta sem título",
+          tipo: tipoProposta,
           status: "rascunho",
         });
         propostaDocId = novaPropostadoc.id;
@@ -236,6 +283,21 @@ export default function EditorPropostas() {
             )}
           </CardContent>
         </Card>
+
+        {/* Tipo de Proposta */}
+        <div className="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-blue-600 font-medium">Tipo de Proposta</p>
+              <p className="text-lg font-semibold text-blue-900">
+                {tipoProposta === "habilitacao" && "Documentos de Habilitação Técnica"}
+                {tipoProposta === "tecnica" && "Proposta Técnica"}
+                {tipoProposta === "preco" && "Proposta de Preço"}
+              </p>
+            </div>
+            <Badge className="bg-blue-600">{tipoProposta}</Badge>
+          </div>
+        </div>
 
         {/* Esteira de Montagem */}
         <Card className="mb-8">

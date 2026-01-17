@@ -27,6 +27,7 @@ const navigation = [
   { name: "Certidões", href: "/Certidoes", icon: FileCheck },
   { name: "Oportunidades", href: "/Oportunidades", icon: Target },
   { name: "Filtros de Busca", href: "/Filtros", icon: Filter },
+  { name: "Editor de Propostas", href: "/EditorPropostas", icon: FileCheck },
   { name: "Fontes de Consulta", href: "/FontesConsultas", icon: Target },
 ];
 

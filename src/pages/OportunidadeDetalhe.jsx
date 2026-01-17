@@ -20,7 +20,8 @@ import {
   Upload,
   File,
   Loader2,
-  ClipboardList
+  ClipboardList,
+  Plus
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -45,10 +46,12 @@ import { cn } from "@/lib/utils";
 import moment from "moment";
 import { toast } from "sonner";
 import { createPageUrl } from "@/utils";
+import ModalTipoProposta from "@/components/editor/ModalTipoProposta";
 
 export default function OportunidadeDetalhe() {
   const [oportunidadeId, setOportunidadeId] = useState(null);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const [showModalTipoProposta, setShowModalTipoProposta] = useState(false);
   const [editData, setEditData] = useState({});
   const [selectedProfissionais, setSelectedProfissionais] = useState([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -126,6 +129,10 @@ export default function OportunidadeDetalhe() {
     } finally {
       setIsUploading(false);
     }
+  };
+
+  const handleNovaProposta = (tipo) => {
+    window.location.href = createPageUrl("EditorPropostas") + `?oportunidade_id=${oportunidadeId}&tipo=${tipo}`;
   };
 
   const handleAnalyzeWithPDF = async () => {
@@ -282,6 +289,14 @@ Seja preciso e objetivo.`,
           </div>
 
           <div className="flex flex-wrap items-center gap-2 md:gap-3 w-full sm:w-auto">
+            <Button 
+              onClick={() => setShowModalTipoProposta(true)}
+              className="gap-2 bg-emerald-600 hover:bg-emerald-700 flex-1 sm:flex-none"
+            >
+              <Plus className="w-4 h-4" />
+              <span className="hidden sm:inline">Nova Proposta</span>
+              <span className="sm:hidden">Proposta</span>
+            </Button>
             <Button 
               variant="outline" 
               onClick={handleAnalyzeWithPDF}
@@ -742,6 +757,13 @@ Seja preciso e objetivo.`,
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Modal Tipo Proposta */}
+        <ModalTipoProposta
+          open={showModalTipoProposta}
+          onClose={() => setShowModalTipoProposta(false)}
+          onSelect={handleNovaProposta}
+        />
 
         {/* Delete Alert */}
         <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
