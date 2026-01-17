@@ -6,6 +6,7 @@ import Certidoes from './pages/Certidoes';
 import OportunidadeDetalhe from './pages/OportunidadeDetalhe';
 import Filtros from './pages/Filtros';
 import FontesConsultas from './pages/FontesConsultas';
+import AcervoTecnico from './pages/AcervoTecnico';
 import __Layout from './Layout.jsx';
 
 
@@ -18,6 +19,7 @@ export const PAGES = {
     "OportunidadeDetalhe": OportunidadeDetalhe,
     "Filtros": Filtros,
     "FontesConsultas": FontesConsultas,
+    "AcervoTecnico": AcervoTecnico,
 }
 
 export const pagesConfig = {

@@ -22,6 +22,7 @@ const navigation = [
   { name: "Dashboard", href: "/Dashboard", icon: LayoutDashboard },
   { name: "Empresas", href: "/Empresas", icon: Building2 },
   { name: "Equipe Técnica", href: "/Profissionais", icon: Users },
+  { name: "Acervo Técnico", href: "/AcervoTecnico", icon: FileCheck },
   { name: "Certidões", href: "/Certidoes", icon: FileCheck },
   { name: "Oportunidades", href: "/Oportunidades", icon: Target },
   { name: "Filtros de Busca", href: "/Filtros", icon: Filter },
