@@ -1,6 +1,18 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer
+} from "recharts";
 import { 
   FileCheck, 
   Plus, 
@@ -13,7 +25,8 @@ import {
   Pencil,
   MoreVertical,
   Building2,
-  ExternalLink
+  ExternalLink,
+  TrendingUp
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -81,6 +94,64 @@ export default function BibliotecaCompliance() {
     queryKey: ['empresas'],
     queryFn: () => base44.entities.Empresa.list()
   });
+
+  // Função para determinar status
+  const getStatusDetail = (dataValidade) => {
+    if (!dataValidade) return { label: "Sem Validade", status: "unknown" };
+    
+    const hoje = new Date();
+    const validade = new Date(dataValidade);
+    const diasRestantes = Math.ceil((validade - hoje) / (1000 * 60 * 60 * 24));
+
+    if (diasRestantes < 0) {
+      return { label: "Vencido", status: "vencido", dias: diasRestantes };
+    } else if (diasRestantes <= 30) {
+      return { label: "Vencendo", status: "vencendo", dias: diasRestantes };
+    } else {
+      return { label: "Vigente", status: "vigente", dias: diasRestantes };
+    }
+  };
+
+  // Dados para gráficos
+  const statusChartData = useMemo(() => {
+    const docs = Array.isArray(documentos) ? documentos : [];
+    const vencidos = docs.filter(d => getStatusDetail(d.data_validade).status === "vencido").length;
+    const vencendo = docs.filter(d => getStatusDetail(d.data_validade).status === "vencendo").length;
+    const vigentes = docs.filter(d => getStatusDetail(d.data_validade).status === "vigente").length;
+    const unknown = docs.filter(d => getStatusDetail(d.data_validade).status === "unknown").length;
+
+    return [
+      { name: "Vigentes", value: vigentes, color: "#10b981" },
+      { name: "Vencendo", value: vencendo, color: "#f59e0b" },
+      { name: "Vencidos", value: vencidos, color: "#ef4444" },
+      { name: "Sem Validade", value: unknown, color: "#6b7280" }
+    ];
+  }, [documentos]);
+
+  const categoryChartData = useMemo(() => {
+    const docs = Array.isArray(documentos) ? documentos : [];
+    const categories = {
+      "Jurídica": 0,
+      "Fiscal/Trabalhista": 0,
+      "Econômica": 0,
+      "Técnica/Institucional": 0
+    };
+
+    docs.forEach(doc => {
+      if (doc.categoria in categories) {
+        categories[doc.categoria]++;
+      }
+    });
+
+    return Object.entries(categories).map(([name, value]) => ({ name, value }));
+  }, [documentos]);
+
+  const criticalDocs = useMemo(() => {
+    const docs = Array.isArray(documentos) ? documentos : [];
+    return docs
+      .filter(d => getStatusDetail(d.data_validade).status === "vencido")
+      .slice(0, 5);
+  }, [documentos]);
 
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.BibliotecaCompliance.create(data),
@@ -300,6 +371,85 @@ export default function BibliotecaCompliance() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Gráficos de Análise */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          {/* Pizza de Status */}
+          <Card className="glass-panel">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-primary" />
+                Distribuição por Status
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={250}>
+                <PieChart>
+                  <Pie
+                    data={statusChartData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, value }) => `${name}: ${value}`}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {statusChartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          {/* Barras de Categoria */}
+          <Card className="glass-panel">
+            <CardHeader>
+              <CardTitle>Documentos por Categoria</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={categoryChartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#444" />
+                  <XAxis dataKey="name" stroke="#999" />
+                  <YAxis stroke="#999" />
+                  <Tooltip contentStyle={{ backgroundColor: "#1f2937", border: "1px solid #444" }} />
+                  <Bar dataKey="value" fill="#f59e0b" />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Alertas Críticos */}
+        {criticalDocs.length > 0 && (
+          <Card className="glass-panel border-red-500/20 bg-red-950/10 mb-6">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-red-400">
+                <AlertCircle className="w-5 h-5" />
+                Alertas Críticos - Documentos Vencidos
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {criticalDocs.map((doc) => (
+                  <div key={doc.id} className="flex items-center justify-between p-3 bg-red-950/20 rounded border border-red-500/30">
+                    <div className="flex-1">
+                      <p className="font-medium text-red-200">{doc.nome_documento}</p>
+                      <p className="text-sm text-red-300">
+                        Vencido desde: {new Date(doc.data_validade).toLocaleDateString('pt-BR')}
+                      </p>
+                    </div>
+                    <Badge className="bg-red-600 text-white">Vencido</Badge>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Filtros */}
         <Card className="glass-panel mb-6">
