@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Plus, Upload, Trash2, ExternalLink, Briefcase } from "lucide-react";
+import { FileText, Plus, Upload, Trash2, ExternalLink, Briefcase, Sparkles, AlertTriangle } from "lucide-react";
+import { toast } from "sonner";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
 import {
   Dialog,
@@ -31,8 +33,10 @@ export default function AcervoTecnico() {
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [analyzingDoc, setAnalyzingDoc] = useState(false);
   const [deletingAcervo, setDeletingAcervo] = useState(null);
   const [selectedProfissional, setSelectedProfissional] = useState("");
+  const [aiWarnings, setAiWarnings] = useState([]);
   
   const [formData, setFormData] = useState({
     profissional_id: "",
@@ -70,6 +74,7 @@ export default function AcervoTecnico() {
         valor_obra: "",
         orgao_contratante: ""
       });
+      setAiWarnings([]);
     }
   });
 
@@ -96,10 +101,81 @@ export default function AcervoTecnico() {
         ...prev, 
         arquivo_cat_urls: [...(prev.arquivo_cat_urls || []), ...uploadedUrls] 
       }));
+      
+      // Auto-analyze first document if form is still empty
+      if (uploadedUrls.length > 0 && !formData.titulo && !formData.descricao) {
+        toast.info("Analisando documento com IA...");
+        await handleAnalyzeDocument(uploadedUrls[0]);
+      }
     } catch (error) {
-      alert("Erro ao fazer upload dos arquivos");
+      toast.error("Erro ao fazer upload dos arquivos");
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handleAnalyzeDocument = async (fileUrl) => {
+    if (!fileUrl) {
+      toast.error("Nenhum documento para analisar");
+      return;
+    }
+
+    setAnalyzingDoc(true);
+    setAiWarnings([]);
+    
+    try {
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: `Analise este documento técnico (CAT, ART ou Atestado) e extraia as seguintes informações:
+
+1. TÍTULO DA OBRA/SERVIÇO: Nome completo do projeto
+2. DESCRIÇÃO: Resumo técnico do que foi executado
+3. ÓRGÃO CONTRATANTE: Nome da instituição/empresa contratante
+4. VALOR DA OBRA: Valor em reais (apenas números)
+5. DATA DE EXECUÇÃO: Data no formato YYYY-MM-DD
+6. TIPO DE DOCUMENTO: CAT, ART, RRT, Atestado ou Outro
+7. ALERTAS: Identifique problemas como: documentos vencidos, informações faltantes, assinaturas ausentes, datas inconsistentes
+
+Seja preciso e extraia apenas informações que existem no documento.`,
+        file_urls: [fileUrl],
+        response_json_schema: {
+          type: "object",
+          properties: {
+            titulo: { type: "string" },
+            descricao: { type: "string" },
+            orgao_contratante: { type: "string" },
+            valor_obra: { type: "string" },
+            data_execucao: { type: "string" },
+            tipo_documento: { type: "string" },
+            alertas: {
+              type: "array",
+              items: { type: "string" }
+            }
+          }
+        }
+      });
+
+      // Populate form with extracted data
+      setFormData(prev => ({
+        ...prev,
+        titulo: result.titulo || prev.titulo,
+        descricao: result.descricao || prev.descricao,
+        orgao_contratante: result.orgao_contratante || prev.orgao_contratante,
+        valor_obra: result.valor_obra ? result.valor_obra.replace(/[^\d]/g, '') : prev.valor_obra,
+        data_execucao: result.data_execucao || prev.data_execucao,
+        tipo_documento: result.tipo_documento || prev.tipo_documento
+      }));
+
+      // Set warnings if any
+      if (result.alertas && result.alertas.length > 0) {
+        setAiWarnings(result.alertas);
+      }
+
+      toast.success("Documento analisado! Campos preenchidos automaticamente.");
+    } catch (error) {
+      console.error("Erro ao analisar documento:", error);
+      toast.error("Erro ao analisar documento com IA");
+    } finally {
+      setAnalyzingDoc(false);
     }
   };
 
@@ -289,6 +365,21 @@ export default function AcervoTecnico() {
               <DialogTitle>Novo Documento Técnico</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
+              {/* AI Warnings */}
+              {aiWarnings.length > 0 && (
+                <Alert variant="destructive" className="border-amber-600/50 bg-amber-950/30">
+                  <AlertTriangle className="h-4 w-4 text-amber-500" />
+                  <AlertDescription className="ml-2">
+                    <p className="font-semibold text-amber-200 mb-2">Agente Auditor identificou problemas:</p>
+                    <ul className="list-disc list-inside space-y-1 text-sm text-amber-100">
+                      {aiWarnings.map((warning, idx) => (
+                        <li key={idx}>{warning}</li>
+                      ))}
+                    </ul>
+                  </AlertDescription>
+                </Alert>
+              )}
+
               <div className="space-y-2">
                 <Label>Profissional *</Label>
                 <Select 
@@ -379,15 +470,36 @@ export default function AcervoTecnico() {
               </div>
 
               <div className="space-y-2">
-                <Label>Arquivos PDF do Documento (múltiplos)</Label>
+                <div className="flex items-center justify-between">
+                  <Label>Arquivos PDF do Documento (múltiplos)</Label>
+                  {formData.arquivo_cat_urls && formData.arquivo_cat_urls.length > 0 && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleAnalyzeDocument(formData.arquivo_cat_urls[0])}
+                      disabled={analyzingDoc}
+                      className="gap-2"
+                    >
+                      <Sparkles className="w-3 h-3" />
+                      {analyzingDoc ? "Analisando..." : "Analisar com IA"}
+                    </Button>
+                  )}
+                </div>
                 <Input
                   type="file"
                   accept=".pdf"
                   multiple
                   onChange={handleFileUpload}
-                  disabled={uploading}
+                  disabled={uploading || analyzingDoc}
                 />
                 {uploading && <p className="text-sm text-slate-500">Enviando arquivos...</p>}
+                {analyzingDoc && (
+                  <p className="text-sm text-primary flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 animate-pulse" />
+                    Agente está extraindo dados do documento...
+                  </p>
+                )}
                 {formData.arquivo_cat_urls && formData.arquivo_cat_urls.length > 0 && (
                   <div className="space-y-2 mt-2">
                     {formData.arquivo_cat_urls.map((url, index) => (
