@@ -11,6 +11,7 @@ import OportunidadeDetalhe from './pages/OportunidadeDetalhe';
 import Oportunidades from './pages/Oportunidades';
 import Perfil from './pages/Perfil';
 import Profissionais from './pages/Profissionais';
+import EditorPropostas from './pages/EditorPropostas';
 import __Layout from './Layout.jsx';
 
 
@@ -28,6 +29,7 @@ export const PAGES = {
     "Oportunidades": Oportunidades,
     "Perfil": Perfil,
     "Profissionais": Profissionais,
+    "EditorPropostas": EditorPropostas,
 }
 
 export const pagesConfig = {
