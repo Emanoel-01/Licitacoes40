@@ -300,29 +300,30 @@ export default function BibliotecaCompliance() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground tracking-tight">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
               Biblioteca de Compliance
             </h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-muted-foreground mt-1 text-sm">
               Gestão de documentos de habilitação e conformidade
             </p>
           </div>
           <Button 
             onClick={() => setShowForm(true)}
-            className="gap-2"
+            className="gap-2 w-full sm:w-auto"
           >
             <Plus className="w-4 h-4" />
-            Adicionar Documento
+            <span className="hidden sm:inline">Adicionar Documento</span>
+            <span className="sm:hidden">Adicionar</span>
           </Button>
         </div>
 
         {/* Estatísticas */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
           <Card className="glass-panel">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -373,7 +374,7 @@ export default function BibliotecaCompliance() {
         </div>
 
         {/* Gráficos de Análise */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6">
           {/* Pizza de Status */}
           <Card className="glass-panel">
             <CardHeader>
@@ -453,10 +454,10 @@ export default function BibliotecaCompliance() {
 
         {/* Filtros */}
         <Card className="glass-panel mb-6">
-          <CardContent className="p-4">
-            <div className="flex flex-wrap gap-4 items-end">
-              <div className="flex-1 min-w-[200px]">
-                <Label className="text-sm text-muted-foreground mb-2">Categoria</Label>
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 items-start sm:items-end">
+              <div className="flex-1 min-w-full sm:min-w-[200px]">
+                <Label className="text-xs sm:text-sm text-muted-foreground mb-2 block">Categoria</Label>
                 <Select value={filterCategoria} onValueChange={setFilterCategoria}>
                   <SelectTrigger>
                     <SelectValue />
@@ -471,8 +472,8 @@ export default function BibliotecaCompliance() {
                 </Select>
               </div>
 
-              <div className="flex-1 min-w-[200px]">
-                <Label className="text-sm text-muted-foreground mb-2">Status</Label>
+              <div className="flex-1 min-w-full sm:min-w-[200px]">
+                <Label className="text-xs sm:text-sm text-muted-foreground mb-2 block">Status</Label>
                 <Select value={filterStatus} onValueChange={setFilterStatus}>
                   <SelectTrigger>
                     <SelectValue />
@@ -489,7 +490,7 @@ export default function BibliotecaCompliance() {
               <Button 
                 variant="outline" 
                 onClick={() => { setFilterCategoria("all"); setFilterStatus("all"); }}
-                className="self-end"
+                className="w-full sm:w-auto"
               >
                 Limpar Filtros
               </Button>
@@ -638,7 +639,7 @@ export default function BibliotecaCompliance() {
 
         {/* Modal de Criação/Edição */}
         <Dialog open={showForm} onOpenChange={(open) => !open && resetForm()}>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto w-full mx-4 sm:mx-0">
             <DialogHeader>
               <DialogTitle>
                 {editingDoc ? "Editar Documento" : "Novo Documento de Compliance"}
