@@ -253,14 +253,14 @@ export default function Empresas() {
 
                       <div className="grid grid-cols-2 gap-4">
                         <Link 
-                          to={createPageUrl("Profissionais") + `?empresa=${empresa.id}`}
+                          to={`/Profissionais?empresa=${empresa.id}`}
                           className="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 transition-colors"
                         >
                           <Users className="w-4 h-4" />
                           <span>{profCount} profissionais</span>
                         </Link>
                         <Link 
-                          to={createPageUrl("Certidoes") + `?empresa=${empresa.id}`}
+                          to={`/Certidoes?empresa=${empresa.id}`}
                           className={cn(
                             "flex items-center gap-2 text-sm transition-colors",
                             certStatus.vencidas > 0 ? "text-red-600" : 
@@ -283,7 +283,7 @@ export default function Empresas() {
                     {/* Footer */}
                     <div className="px-6 py-3 bg-slate-50 border-t border-slate-100">
                       <Link 
-                        to={createPageUrl("EmpresaDetalhe") + `?id=${empresa.id}`}
+                        to={`/EmpresaDetalhe?id=${empresa.id}`}
                         className="flex items-center justify-between text-sm text-slate-600 hover:text-blue-600"
                       >
                         <span>Ver detalhes</span>
