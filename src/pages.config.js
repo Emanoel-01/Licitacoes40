@@ -7,6 +7,7 @@ import OportunidadeDetalhe from './pages/OportunidadeDetalhe';
 import Filtros from './pages/Filtros';
 import FontesConsultas from './pages/FontesConsultas';
 import AcervoTecnico from './pages/AcervoTecnico';
+import LandingPage from './pages/LandingPage';
 import __Layout from './Layout.jsx';
 
 
@@ -20,6 +21,7 @@ export const PAGES = {
     "Filtros": Filtros,
     "FontesConsultas": FontesConsultas,
     "AcervoTecnico": AcervoTecnico,
+    "LandingPage": LandingPage,
 }
 
 export const pagesConfig = {

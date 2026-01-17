@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Upload, User, FileText, Save, X } from "lucide-react";
+import { Upload, User, FileText, Save, X, Trash2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 export default function ProfissionalForm({ profissional, empresaId, onSave, onCancel }) {
@@ -22,33 +22,42 @@ export default function ProfissionalForm({ profissional, empresaId, onSave, onCa
     email: "",
     telefone: "",
     especialidades: "",
-    acervo_tecnico_url: "",
-    certidao_crq_url: "",
+    certidao_crq_urls: [],
     validade_crq: "",
     status_crq: "pendente",
     is_responsavel_tecnico: false,
     observacoes: ""
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [uploadingAcervo, setUploadingAcervo] = useState(false);
   const [uploadingCRQ, setUploadingCRQ] = useState(false);
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleFileUpload = async (e, field, setUploading) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const handleCRQUpload = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
     
-    setUploading(true);
+    setUploadingCRQ(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      handleChange(field, file_url);
+      const uploadedUrls = [];
+      for (const file of files) {
+        const { file_url } = await base44.integrations.Core.UploadFile({ file });
+        uploadedUrls.push(file_url);
+      }
+      const currentUrls = formData.certidao_crq_urls || [];
+      handleChange("certidao_crq_urls", [...currentUrls, ...uploadedUrls]);
     } catch (error) {
       console.error("Erro no upload:", error);
     }
-    setUploading(false);
+    setUploadingCRQ(false);
+  };
+
+  const removeCRQFile = (index) => {
+    const newUrls = [...(formData.certidao_crq_urls || [])];
+    newUrls.splice(index, 1);
+    handleChange("certidao_crq_urls", newUrls);
   };
 
   const handleSubmit = async (e) => {
@@ -198,69 +207,38 @@ export default function ProfissionalForm({ profissional, empresaId, onSave, onCa
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Acervo Técnico */}
-          <div className="p-4 border border-dashed border-slate-300 rounded-xl">
-            <div className="flex items-center justify-between mb-3">
-              <div>
-                <Label className="font-medium">Acervo Técnico (CAT/RRT)</Label>
-                <p className="text-xs text-slate-500">PDF com certidões de acervo técnico</p>
+          {/* CRQ - Múltiplos Arquivos */}
+          <div className="space-y-2">
+            <Label>Certidão de Registro e Quitação - CRQ (múltiplos PDFs)</Label>
+            <p className="text-xs text-slate-500 mb-2">PDFs atualizados do CREA/CAU</p>
+            <Input
+              type="file"
+              accept=".pdf"
+              multiple
+              onChange={handleCRQUpload}
+              disabled={uploadingCRQ}
+            />
+            {uploadingCRQ && <p className="text-sm text-slate-500">Enviando arquivos...</p>}
+            {formData.certidao_crq_urls && formData.certidao_crq_urls.length > 0 && (
+              <div className="space-y-2 mt-2">
+                {formData.certidao_crq_urls.map((url, index) => (
+                  <div key={index} className="flex items-center gap-2 p-2 border border-slate-200 rounded-lg">
+                    <FileText className="w-4 h-4 text-slate-500" />
+                    <a href={url} target="_blank" rel="noreferrer" className="flex-1 text-sm text-blue-600 hover:underline truncate">
+                      CRQ {index + 1}
+                    </a>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeCRQFile(index)}
+                      className="h-6 w-6"
+                    >
+                      <Trash2 className="w-3 h-3 text-red-500" />
+                    </Button>
+                  </div>
+                ))}
               </div>
-              <label className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors">
-                <Upload className="w-4 h-4 text-slate-600" />
-                <span className="text-sm font-medium text-slate-700">
-                  {uploadingAcervo ? "Enviando..." : "Upload PDF"}
-                </span>
-                <input 
-                  type="file" 
-                  accept=".pdf" 
-                  className="hidden" 
-                  onChange={(e) => handleFileUpload(e, "acervo_tecnico_url", setUploadingAcervo)}
-                  disabled={uploadingAcervo}
-                />
-              </label>
-            </div>
-            {formData.acervo_tecnico_url && (
-              <a 
-                href={formData.acervo_tecnico_url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-sm text-blue-600 hover:underline"
-              >
-                📄 Ver documento anexado
-              </a>
-            )}
-          </div>
-
-          {/* CRQ */}
-          <div className="p-4 border border-dashed border-slate-300 rounded-xl">
-            <div className="flex items-center justify-between mb-3">
-              <div>
-                <Label className="font-medium">Certidão de Registro e Quitação (CRQ)</Label>
-                <p className="text-xs text-slate-500">PDF atualizado do CREA/CAU</p>
-              </div>
-              <label className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors">
-                <Upload className="w-4 h-4 text-slate-600" />
-                <span className="text-sm font-medium text-slate-700">
-                  {uploadingCRQ ? "Enviando..." : "Upload PDF"}
-                </span>
-                <input 
-                  type="file" 
-                  accept=".pdf" 
-                  className="hidden" 
-                  onChange={(e) => handleFileUpload(e, "certidao_crq_url", setUploadingCRQ)}
-                  disabled={uploadingCRQ}
-                />
-              </label>
-            </div>
-            {formData.certidao_crq_url && (
-              <a 
-                href={formData.certidao_crq_url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-sm text-blue-600 hover:underline"
-              >
-                📄 Ver documento anexado
-              </a>
             )}
           </div>
 
