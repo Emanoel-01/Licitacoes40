@@ -44,6 +44,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
+import TagInput from "../components/forms/TagInput";
+import MultiSelect from "../components/forms/MultiSelect";
 
 export default function Filtros() {
   const [showForm, setShowForm] = useState(false);
@@ -393,26 +395,24 @@ export default function Filtros() {
 
               <div className="space-y-2">
                 <Label>Palavras-Chave Positivas</Label>
-                <Input
+                <TagInput
                   value={formData.palavras_positivas}
-                  onChange={(e) => setFormData(f => ({ ...f, palavras_positivas: e.target.value }))}
-                  placeholder="Restauro, Reforma, Projeto Executivo, Consultoria, BIM"
+                  onChange={(v) => setFormData(f => ({ ...f, palavras_positivas: v }))}
+                  placeholder="Digite palavras-chave e pressione Enter"
+                  variant="positive"
+                  suggestions={["Restauro", "Reforma", "Projeto Executivo", "Consultoria", "BIM", "Arquitetura", "Engenharia"]}
                 />
-                <p className="text-xs text-slate-500">
-                  Separe por vírgulas. Editais com essas palavras terão prioridade.
-                </p>
               </div>
 
               <div className="space-y-2">
                 <Label>Palavras-Chave Negativas (Descarte)</Label>
-                <Input
+                <TagInput
                   value={formData.palavras_negativas}
-                  onChange={(e) => setFormData(f => ({ ...f, palavras_negativas: e.target.value }))}
-                  placeholder="Limpeza Urbana, Locação de Mão de Obra, Pavimentação Asfáltica"
+                  onChange={(v) => setFormData(f => ({ ...f, palavras_negativas: v }))}
+                  placeholder="Digite palavras para descarte e pressione Enter"
+                  variant="negative"
+                  suggestions={["Limpeza Urbana", "Locação de Mão de Obra", "Pavimentação Asfáltica", "Coleta de Lixo"]}
                 />
-                <p className="text-xs text-slate-500">
-                  Editais com essas palavras serão descartados automaticamente.
-                </p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -438,27 +438,22 @@ export default function Filtros() {
 
               <div className="space-y-2">
                 <Label>Estados de Atuação (UF)</Label>
-                <Input
+                <MultiSelect
                   value={formData.estados_atuacao}
-                  onChange={(e) => setFormData(f => ({ ...f, estados_atuacao: e.target.value.toUpperCase() }))}
-                  placeholder="PE, PB, AL, RN, CE"
-                  className="font-mono"
+                  onChange={(v) => setFormData(f => ({ ...f, estados_atuacao: v }))}
+                  placeholder="Selecione os estados"
+                  options={["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"]}
                 />
-                <p className="text-xs text-slate-500">
-                  Siglas separadas por vírgula (Ex: PE, PB). Vazio = busca nacional.
-                </p>
               </div>
 
               <div className="space-y-2">
                 <Label>Modalidades Aceitas</Label>
-                <Input
+                <MultiSelect
                   value={formData.modalidades}
-                  onChange={(e) => setFormData(f => ({ ...f, modalidades: e.target.value }))}
-                  placeholder="Pregão Eletrônico, Concorrência, Tomada de Preços, RDC"
+                  onChange={(v) => setFormData(f => ({ ...f, modalidades: v }))}
+                  placeholder="Selecione as modalidades"
+                  options={["Pregão Eletrônico", "Pregão Presencial", "Concorrência", "Tomada de Preços", "Convite", "RDC", "Dispensa", "Inexigibilidade"]}
                 />
-                <p className="text-xs text-slate-500">
-                  Deixe vazio para aceitar todas as modalidades.
-                </p>
               </div>
 
               <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-lg">
