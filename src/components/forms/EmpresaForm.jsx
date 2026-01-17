@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Upload, Building2, Save, X, FileText, Trash2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { toast } from "sonner";
 
 export default function EmpresaForm({ empresa, onSave, onCancel }) {
   const [formData, setFormData] = useState(empresa || {
@@ -112,11 +113,19 @@ export default function EmpresaForm({ empresa, onSave, onCancel }) {
     e.preventDefault();
     setIsLoading(true);
     try {
+      if (!formData.nome_fantasia || !formData.cnpj) {
+        toast.error("Nome Fantasia e CNPJ são obrigatórios.");
+        setIsLoading(false);
+        return;
+      }
       await onSave(formData);
+      toast.success("Empresa salva com sucesso!");
     } catch (error) {
       console.error("Erro ao salvar:", error);
+      toast.error(`Erro ao salvar empresa: ${error.message || "Verifique os dados e tente novamente."}`);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (
