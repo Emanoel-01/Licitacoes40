@@ -29,6 +29,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { createPageUrl } from "@/utils";
+import { toast } from "sonner";
 
 export default function Oportunidades() {
   const [showForm, setShowForm] = useState(false);
@@ -45,7 +46,8 @@ export default function Oportunidades() {
     link_edital: "",
     uf: "",
     municipio: "",
-    status: "nova"
+    status: "nova",
+    edital_pdf_file: null
   });
   
   const queryClient = useQueryClient();
@@ -70,16 +72,32 @@ export default function Oportunidades() {
         link_edital: "",
         uf: "",
         municipio: "",
-        status: "nova"
+        status: "nova",
+        edital_pdf_file: null
       });
     }
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let edital_pdf_url = null;
+
+    if (formData.edital_pdf_file) {
+      try {
+        const { file_url } = await base44.integrations.Core.UploadFile({ file: formData.edital_pdf_file });
+        edital_pdf_url = file_url;
+      } catch (error) {
+        console.error("Erro ao enviar PDF:", error);
+        toast.error("Erro ao enviar PDF do edital.");
+        return;
+      }
+    }
+
     await createMutation.mutateAsync({
       ...formData,
-      valor_estimado: formData.valor_estimado ? parseFloat(formData.valor_estimado) : null
+      edital_pdf_file: undefined,
+      valor_estimado: formData.valor_estimado ? parseFloat(formData.valor_estimado) : null,
+      ...(edital_pdf_url && { edital_pdf_url })
     });
   };
 
@@ -370,6 +388,17 @@ export default function Oportunidades() {
                   onChange={(e) => setFormData(f => ({ ...f, link_edital: e.target.value }))}
                   placeholder="https://..."
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label>PDF do Edital</Label>
+                <Input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => setFormData(f => ({ ...f, edital_pdf_file: e.target.files?.[0] || null }))}
+                  className="cursor-pointer"
+                />
+                <p className="text-xs text-slate-500">A IA analisará o PDF automaticamente ao criar a oportunidade</p>
               </div>
 
               <div className="flex justify-end gap-3 pt-4">

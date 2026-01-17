@@ -123,8 +123,9 @@ export default function OportunidadeDetalhe() {
     } catch (error) {
       console.error("Erro ao enviar edital:", error);
       toast.error("Erro ao enviar arquivo.");
+    } finally {
+      setIsUploading(false);
     }
-    setIsUploading(false);
   };
 
   const handleAnalyzeWithPDF = async () => {
