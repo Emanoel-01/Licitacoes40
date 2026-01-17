@@ -78,16 +78,16 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
+    <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
+              <h1 className="text-3xl font-bold text-foreground tracking-tight">
                 Central de Licitações
               </h1>
-              <p className="text-slate-500 mt-1">
+              <p className="text-muted-foreground mt-1 font-mono text-sm">
                 Visão geral do portfólio e conformidade documental
               </p>
             </div>
@@ -99,7 +99,7 @@ export default function Dashboard() {
                 </Button>
               </Link>
               <Link to="/Empresas">
-                <Button className="gap-2 bg-slate-900 hover:bg-slate-800">
+                <Button className="gap-2">
                   <Building2 className="w-4 h-4" />
                   Nova Empresa
                 </Button>
@@ -270,7 +270,7 @@ export default function Dashboard() {
             </Card>
 
             {/* Quick Stats */}
-            <Card className="border-slate-200 shadow-sm bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+            <Card className="tech-border shadow-sm glass-panel">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-semibold flex items-center gap-2">
                   <TrendingUp className="w-5 h-5 text-emerald-400" />
@@ -279,23 +279,23 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-300">Novas</span>
-                  <span className="font-bold">{oportunidadesNovas.length}</span>
+                  <span className="text-muted-foreground">Novas</span>
+                  <span className="font-bold font-mono">{oportunidadesNovas.length}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-300">Em Análise</span>
-                  <span className="font-bold">{oportunidadesEmAnalise.length}</span>
+                  <span className="text-muted-foreground">Em Análise</span>
+                  <span className="font-bold font-mono">{oportunidadesEmAnalise.length}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-300">Propostas Enviadas</span>
-                  <span className="font-bold">
+                  <span className="text-muted-foreground">Propostas Enviadas</span>
+                  <span className="font-bold font-mono">
                     {oportunidades.filter(o => o.status === "proposta_enviada").length}
                   </span>
                 </div>
-                <hr className="border-slate-700" />
+                <hr className="border-slate-700/50" />
                 <div className="flex justify-between items-center">
-                  <span className="text-emerald-400 font-medium">Valor Total</span>
-                  <span className="font-bold text-lg">{formatCurrency(valorTotalOportunidades)}</span>
+                  <span className="text-primary font-medium">Valor Total</span>
+                  <span className="font-bold text-lg font-mono">{formatCurrency(valorTotalOportunidades)}</span>
                 </div>
               </CardContent>
             </Card>
