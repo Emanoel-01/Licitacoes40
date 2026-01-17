@@ -21,10 +21,14 @@ export default function EmpresaForm({ empresa, onSave, onCancel }) {
     cpf_responsavel: "",
     status: "ativo",
     logo_url: "",
+    contrato_social_url: "",
+    documentos_socios_url: "",
     observacoes: ""
   });
   const [isLoading, setIsLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingContrato, setUploadingContrato] = useState(false);
+  const [uploadingSocios, setUploadingSocios] = useState(false);
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -52,6 +56,34 @@ export default function EmpresaForm({ empresa, onSave, onCancel }) {
       console.error("Erro no upload:", error);
     }
     setUploading(false);
+  };
+
+  const handleContratoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setUploadingContrato(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      handleChange("contrato_social_url", file_url);
+    } catch (error) {
+      console.error("Erro no upload:", error);
+    }
+    setUploadingContrato(false);
+  };
+
+  const handleSociosUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setUploadingSocios(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      handleChange("documentos_socios_url", file_url);
+    } catch (error) {
+      console.error("Erro no upload:", error);
+    }
+    setUploadingSocios(false);
   };
 
   const handleSubmit = async (e) => {
@@ -227,23 +259,51 @@ export default function EmpresaForm({ empresa, onSave, onCancel }) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="contrato_social_url">Contrato Social (URL do PDF)</Label>
-            <Input
-              id="contrato_social_url"
-              value={formData.contrato_social_url || ""}
-              onChange={(e) => handleChange("contrato_social_url", e.target.value)}
-              placeholder="URL do arquivo PDF do contrato social"
-            />
+            <Label htmlFor="contrato_social">Contrato Social (PDF)</Label>
+            <div className="flex gap-2">
+              <Input
+                type="file"
+                accept=".pdf"
+                onChange={handleContratoUpload}
+                disabled={uploadingContrato}
+                className="flex-1"
+              />
+              {formData.contrato_social_url && (
+                <a
+                  href={formData.contrato_social_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1 px-3 py-2 text-sm text-blue-600 hover:underline border border-slate-200 rounded-lg"
+                >
+                  Ver PDF
+                </a>
+              )}
+            </div>
+            {uploadingContrato && <p className="text-sm text-slate-500">Enviando arquivo...</p>}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="documentos_socios_url">Documentos dos Sócios (URL do PDF/ZIP)</Label>
-            <Input
-              id="documentos_socios_url"
-              value={formData.documentos_socios_url || ""}
-              onChange={(e) => handleChange("documentos_socios_url", e.target.value)}
-              placeholder="URL dos documentos RG/CPF dos sócios"
-            />
+            <Label htmlFor="documentos_socios">Documentos dos Sócios (PDF/ZIP)</Label>
+            <div className="flex gap-2">
+              <Input
+                type="file"
+                accept=".pdf,.zip"
+                onChange={handleSociosUpload}
+                disabled={uploadingSocios}
+                className="flex-1"
+              />
+              {formData.documentos_socios_url && (
+                <a
+                  href={formData.documentos_socios_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1 px-3 py-2 text-sm text-blue-600 hover:underline border border-slate-200 rounded-lg"
+                >
+                  Ver Arquivo
+                </a>
+              )}
+            </div>
+            {uploadingSocios && <p className="text-sm text-slate-500">Enviando arquivo...</p>}
           </div>
 
           <div className="space-y-2">
