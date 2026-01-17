@@ -198,52 +198,61 @@ Seja preciso e objetivo.`,
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
               Oportunidades
             </h1>
-            <p className="text-slate-500 mt-1">
+            <p className="text-slate-500 mt-1 text-sm">
               Gerencie editais e licitações
             </p>
           </div>
           <Button 
             onClick={() => setShowForm(true)}
-            className="gap-2 bg-slate-900 hover:bg-slate-800"
+            className="gap-2 bg-slate-900 hover:bg-slate-800 w-full sm:w-auto"
           >
             <Plus className="w-4 h-4" />
-            Nova Oportunidade
+            <span className="hidden sm:inline">Nova Oportunidade</span>
+            <span className="sm:hidden">Novo</span>
           </Button>
         </div>
 
         {/* Filters Bar */}
-        <div className="flex flex-col lg:flex-row gap-4 mb-6">
+        <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 mb-6">
           <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 sm:w-5 h-4 sm:h-5 text-slate-400" />
             <Input
-              placeholder="Buscar por objeto, órgão ou número..."
+              placeholder="Buscar por objeto, órgão..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-12 h-12 bg-white border-slate-200"
+              className="pl-10 sm:pl-12 h-10 sm:h-12 bg-white border-slate-200 text-sm"
             />
           </div>
-          
-          <div className="flex gap-3">
-            <Tabs value={statusFilter} onValueChange={setStatusFilter} className="bg-white rounded-lg border border-slate-200">
-              <TabsList className="h-12 p-1 bg-transparent">
-                <TabsTrigger value="all" className="gap-1 data-[state=active]:bg-slate-100">
-                  Todas <Badge variant="secondary" className="ml-1">{statusCounts.all}</Badge>
+
+          <div className="flex gap-2 sm:gap-3 overflow-x-auto">
+            <Tabs value={statusFilter} onValueChange={setStatusFilter} className="bg-white rounded-lg border border-slate-200 overflow-x-auto">
+              <TabsList className="h-9 sm:h-12 p-1 bg-transparent inline-flex">
+                <TabsTrigger value="all" className="gap-1 text-xs sm:text-sm data-[state=active]:bg-slate-100">
+                  <span className="hidden sm:inline">Todas</span>
+                  <span className="sm:hidden">T</span>
+                  <Badge variant="secondary" className="ml-1 text-xs">{statusCounts.all}</Badge>
                 </TabsTrigger>
-                <TabsTrigger value="nova" className="gap-1 data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700">
-                  Novas <Badge variant="secondary" className="ml-1 bg-blue-100 text-blue-700">{statusCounts.nova}</Badge>
+                <TabsTrigger value="nova" className="gap-1 text-xs sm:text-sm data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700">
+                  <span className="hidden sm:inline">Novas</span>
+                  <span className="sm:hidden">N</span>
+                  <Badge variant="secondary" className="ml-1 bg-blue-100 text-blue-700 text-xs">{statusCounts.nova}</Badge>
                 </TabsTrigger>
-                <TabsTrigger value="em_analise" className="gap-1 data-[state=active]:bg-amber-100 data-[state=active]:text-amber-700">
-                  Análise <Badge variant="secondary" className="ml-1">{statusCounts.em_analise}</Badge>
+                <TabsTrigger value="em_analise" className="gap-1 text-xs sm:text-sm data-[state=active]:bg-amber-100 data-[state=active]:text-amber-700">
+                  <span className="hidden sm:inline">Análise</span>
+                  <span className="sm:hidden">A</span>
+                  <Badge variant="secondary" className="ml-1 text-xs">{statusCounts.em_analise}</Badge>
                 </TabsTrigger>
-                <TabsTrigger value="aprovada" className="gap-1 data-[state=active]:bg-emerald-100 data-[state=active]:text-emerald-700">
-                  Aprovadas <Badge variant="secondary" className="ml-1">{statusCounts.aprovada}</Badge>
+                <TabsTrigger value="aprovada" className="gap-1 text-xs sm:text-sm data-[state=active]:bg-emerald-100 data-[state=active]:text-emerald-700">
+                  <span className="hidden sm:inline">Aprovadas</span>
+                  <span className="sm:hidden">Ap</span>
+                  <Badge variant="secondary" className="ml-1 text-xs">{statusCounts.aprovada}</Badge>
                 </TabsTrigger>
               </TabsList>
             </Tabs>
@@ -271,7 +280,7 @@ Seja preciso e objetivo.`,
 
         {/* Content */}
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <Card key={i} className="animate-pulse">
                 <CardContent className="p-6">
@@ -284,9 +293,9 @@ Seja preciso e objetivo.`,
           </div>
         ) : filteredOportunidades.length === 0 ? (
           <Card className="border-dashed border-2 border-slate-300">
-            <CardContent className="py-16 text-center">
-              <Target className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-slate-700 mb-2">
+            <CardContent className="py-12 sm:py-16 text-center px-4">
+              <Target className="w-12 sm:w-16 h-12 sm:h-16 text-slate-300 mx-auto mb-4" />
+              <h3 className="text-lg sm:text-xl font-semibold text-slate-700 mb-2">
                 {searchTerm || statusFilter !== "all" 
                   ? "Nenhuma oportunidade encontrada" 
                   : "Nenhuma oportunidade cadastrada"
@@ -307,7 +316,7 @@ Seja preciso e objetivo.`,
             </CardContent>
           </Card>
         ) : viewMode === "grid" ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {filteredOportunidades.map((oportunidade) => (
               <OportunidadeCard 
                 key={oportunidade.id} 
@@ -323,21 +332,21 @@ Seja preciso e objetivo.`,
                 {filteredOportunidades.map((oportunidade) => (
                   <div 
                     key={oportunidade.id}
-                    className="flex items-center justify-between p-4 hover:bg-slate-50 cursor-pointer transition-colors"
+                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 sm:p-4 hover:bg-slate-50 cursor-pointer transition-colors gap-2"
                     onClick={() => window.location.href = createPageUrl("OportunidadeDetalhe") + `?id=${oportunidade.id}`}
                   >
-                    <div className="flex-1 min-w-0 mr-4">
-                      <h3 className="font-medium text-slate-900 truncate">{oportunidade.objeto}</h3>
-                      <p className="text-sm text-slate-500">{oportunidade.orgao_licitante}</p>
+                    <div className="flex-1 min-w-0 w-full">
+                      <h3 className="font-medium text-slate-900 truncate text-sm">{oportunidade.objeto}</h3>
+                      <p className="text-xs text-slate-500 truncate">{oportunidade.orgao_licitante}</p>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center justify-between w-full sm:w-auto gap-2 text-xs sm:text-sm">
                       <div className="text-right">
                         <p className="font-semibold text-slate-900">
                           {formatCurrency(oportunidade.valor_estimado)}
                         </p>
-                        <p className="text-xs text-slate-500">{oportunidade.modalidade}</p>
+                        <p className="text-xs text-slate-500 truncate">{oportunidade.modalidade}</p>
                       </div>
-                      <Badge variant="outline">
+                      <Badge variant="outline" className="whitespace-nowrap flex-shrink-0">
                         {oportunidade.status?.replace(/_/g, ' ')}
                       </Badge>
                     </div>
@@ -350,13 +359,13 @@ Seja preciso e objetivo.`,
 
         {/* Modal de Criação */}
         <Dialog open={showForm} onOpenChange={setShowForm}>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto w-full mx-4 sm:mx-0">
             <DialogHeader>
-              <DialogTitle>Nova Oportunidade</DialogTitle>
+              <DialogTitle className="text-lg sm:text-xl">Nova Oportunidade</DialogTitle>
             </DialogHeader>
-            
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="space-y-2">
                   <Label>Número do Edital</Label>
                   <Input
@@ -409,9 +418,9 @@ Seja preciso e objetivo.`,
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="space-y-2">
-                  <Label>Valor Estimado (R$)</Label>
+                  <Label className="text-sm">Valor Estimado (R$)</Label>
                   <Input
                     type="number"
                     value={formData.valor_estimado}
@@ -420,7 +429,7 @@ Seja preciso e objetivo.`,
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Data/Hora de Abertura</Label>
+                  <Label className="text-sm">Data/Hora de Abertura</Label>
                   <Input
                     type="datetime-local"
                     value={formData.data_abertura}
@@ -429,9 +438,9 @@ Seja preciso e objetivo.`,
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="space-y-2">
-                  <Label>UF</Label>
+                  <Label className="text-sm">UF</Label>
                   <Input
                     value={formData.uf}
                     onChange={(e) => setFormData(f => ({ ...f, uf: e.target.value.toUpperCase() }))}
@@ -470,12 +479,12 @@ Seja preciso e objetivo.`,
                 <p className="text-xs text-slate-500">A IA analisará o PDF automaticamente ao criar a oportunidade</p>
               </div>
 
-              <div className="flex justify-end gap-3 pt-4">
-                <Button type="button" variant="outline" onClick={() => setShowForm(false)} disabled={isAnalyzing}>
+              <div className="flex gap-2 sm:gap-3 pt-4">
+                <Button type="button" variant="outline" onClick={() => setShowForm(false)} disabled={isAnalyzing} className="flex-1 text-sm">
                   Cancelar
                 </Button>
-                <Button type="submit" className="bg-slate-900 hover:bg-slate-800" disabled={isAnalyzing || createMutation.isPending}>
-                  {isAnalyzing ? "Analisando com IA..." : createMutation.isPending ? "Salvando..." : "Cadastrar Oportunidade"}
+                <Button type="submit" className="bg-slate-900 hover:bg-slate-800 flex-1 text-sm" disabled={isAnalyzing || createMutation.isPending}>
+                  {isAnalyzing ? "Analisando..." : createMutation.isPending ? "Salvando..." : "Cadastrar"}
                 </Button>
               </div>
             </form>
