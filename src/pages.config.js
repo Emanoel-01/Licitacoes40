@@ -1,6 +1,5 @@
 import AcervoTecnico from './pages/AcervoTecnico';
 import BibliotecaCompliance from './pages/BibliotecaCompliance';
-import Certidoes from './pages/Certidoes';
 import Dashboard from './pages/Dashboard';
 import EditorPropostas from './pages/EditorPropostas';
 import Empresas from './pages/Empresas';
@@ -18,7 +17,6 @@ import __Layout from './Layout.jsx';
 export const PAGES = {
     "AcervoTecnico": AcervoTecnico,
     "BibliotecaCompliance": BibliotecaCompliance,
-    "Certidoes": Certidoes,
     "Dashboard": Dashboard,
     "EditorPropostas": EditorPropostas,
     "Empresas": Empresas,

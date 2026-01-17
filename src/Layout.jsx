@@ -24,7 +24,6 @@ const navigation = [
   { name: "Equipe Técnica", href: "/Profissionais", icon: Users },
   { name: "Acervo Técnico", href: "/AcervoTecnico", icon: FileCheck },
   { name: "Biblioteca Compliance", href: "/BibliotecaCompliance", icon: FileCheck },
-  { name: "Certidões", href: "/Certidoes", icon: FileCheck },
   { name: "Oportunidades", href: "/Oportunidades", icon: Target },
   { name: "Filtros de Busca", href: "/Filtros", icon: Filter },
   { name: "Editor de Propostas", href: "/EditorPropostas", icon: FileCheck },
