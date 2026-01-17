@@ -19,12 +19,12 @@ import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 
 const navigation = [
-  { name: "Dashboard", href: "Dashboard", icon: LayoutDashboard },
-  { name: "Empresas", href: "Empresas", icon: Building2 },
-  { name: "Equipe Técnica", href: "Profissionais", icon: Users },
-  { name: "Certidões", href: "Certidoes", icon: FileCheck },
-  { name: "Oportunidades", href: "Oportunidades", icon: Target },
-  { name: "Filtros de Busca", href: "Filtros", icon: Filter },
+  { name: "Dashboard", href: "/Dashboard", icon: LayoutDashboard },
+  { name: "Empresas", href: "/Empresas", icon: Building2 },
+  { name: "Equipe Técnica", href: "/Profissionais", icon: Users },
+  { name: "Certidões", href: "/Certidoes", icon: FileCheck },
+  { name: "Oportunidades", href: "/Oportunidades", icon: Target },
+  { name: "Filtros de Busca", href: "/Filtros", icon: Filter },
 ];
 
 export default function Layout({ children, currentPageName }) {
@@ -70,7 +70,7 @@ export default function Layout({ children, currentPageName }) {
               return (
                 <Link
                   key={item.name}
-                  to={createPageUrl(item.href)}
+                  to={item.href}
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
                     "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200",
