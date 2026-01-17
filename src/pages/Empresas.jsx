@@ -17,6 +17,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -92,6 +93,16 @@ export default function Empresas() {
 
   const handleSave = async (data) => {
     try {
+      // Validação básica
+      if (!data.nome_fantasia?.trim()) {
+        toast.error("Nome Fantasia é obrigatório");
+        return;
+      }
+      if (!data.cnpj?.trim()) {
+        toast.error("CNPJ é obrigatório");
+        return;
+      }
+
       if (editingEmpresa) {
         await updateMutation.mutateAsync({ id: editingEmpresa.id, data });
       } else {
@@ -99,6 +110,7 @@ export default function Empresas() {
       }
     } catch (error) {
       console.error("Erro ao salvar empresa:", error);
+      toast.error(`Erro: ${error?.message || "Falha ao salvar. Tente novamente."}`);
     }
   };
 
