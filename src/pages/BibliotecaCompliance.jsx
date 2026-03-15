@@ -60,6 +60,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import IAComplianceAssistant from "@/components/compliance/IAComplianceAssistant";
+import ExtrairDadosCertidao from "@/components/compliance/ExtrairDadosCertidao";
 
 export default function BibliotecaCompliance() {
   const [showForm, setShowForm] = useState(false);
