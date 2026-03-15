@@ -315,14 +315,25 @@ export default function BibliotecaCompliance() {
               Gestão de documentos de habilitação e conformidade
             </p>
           </div>
-          <Button 
-            onClick={() => setShowForm(true)}
-            className="gap-2 w-full sm:w-auto"
-          >
-            <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">Adicionar Documento</span>
-            <span className="sm:hidden">Adicionar</span>
-          </Button>
+          <div className="flex gap-2 w-full sm:w-auto">
+            <Button 
+              variant="outline"
+              onClick={() => setShowIAAssistant(v => !v)}
+              className="gap-2 flex-1 sm:flex-none border-primary/40 text-primary hover:bg-primary/10"
+            >
+              <Brain className="w-4 h-4" />
+              <span className="hidden sm:inline">Assistente IA</span>
+              <span className="sm:hidden">IA</span>
+            </Button>
+            <Button 
+              onClick={() => setShowForm(true)}
+              className="gap-2 flex-1 sm:flex-none"
+            >
+              <Plus className="w-4 h-4" />
+              <span className="hidden sm:inline">Adicionar Documento</span>
+              <span className="sm:hidden">Adicionar</span>
+            </Button>
+          </div>
         </div>
 
         {/* Estatísticas */}
