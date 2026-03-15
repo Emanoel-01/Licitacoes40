@@ -672,6 +672,27 @@ export default function BibliotecaCompliance() {
             </DialogHeader>
             
             <form onSubmit={handleSubmit} className="space-y-6">
+
+              {/* Upload Inteligente com IA */}
+              {!editingDoc && (
+                <ExtrairDadosCertidao
+                  onDadosExtraidos={(dados) => {
+                    setFormData(f => ({
+                      ...f,
+                      nome_documento: dados.nome_documento || f.nome_documento,
+                      categoria: dados.categoria || f.categoria,
+                      orgao_emissor: dados.orgao_emissor || f.orgao_emissor,
+                      numero_documento: dados.numero_documento || f.numero_documento,
+                      data_emissao: dados.data_emissao || f.data_emissao,
+                      data_validade: dados.data_validade || f.data_validade,
+                      link_renovacao: dados.link_renovacao || f.link_renovacao,
+                      arquivo_url: dados.arquivo_url || f.arquivo_url,
+                      observacoes: dados.observacoes || f.observacoes
+                    }));
+                  }}
+                />
+              )}
+
               <div className="space-y-2">
                 <Label>Nome do Documento *</Label>
                 <Input
