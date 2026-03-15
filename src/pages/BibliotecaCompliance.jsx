@@ -70,6 +70,7 @@ export default function BibliotecaCompliance() {
   const [uploading, setUploading] = useState(false);
   const [filterCategoria, setFilterCategoria] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [showIAAssistant, setShowIAAssistant] = useState(false);
   
   const [formData, setFormData] = useState({
     empresa_id: "",
