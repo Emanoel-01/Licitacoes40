@@ -388,6 +388,16 @@ export default function BibliotecaCompliance() {
           </Card>
         </div>
 
+        {/* Assistente IA */}
+        {showIAAssistant && (
+          <div className="mb-6">
+            <IAComplianceAssistant
+              empresaId={null}
+              onClose={() => setShowIAAssistant(false)}
+            />
+          </div>
+        )}
+
         {/* Gráficos de Análise */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6">
           {/* Pizza de Status */}
